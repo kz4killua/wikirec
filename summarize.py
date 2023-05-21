@@ -28,7 +28,7 @@ def summarize(page):
 
     # Get the sections we are interested in
     sections = wikicode.get_sections()
-    sections = sections[:2]
+    sections = sections[:3]
     
     # Get each section's text
     sections = [str(section) for section in sections]
@@ -57,7 +57,7 @@ def extractive_summary(documents):
     poller = client.begin_analyze_actions(
         documents,
         actions=[
-            ExtractSummaryAction(max_sentence_count=10),
+            ExtractSummaryAction(max_sentence_count=12),
         ],
     )
 

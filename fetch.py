@@ -19,15 +19,25 @@ BOOKS = [
     'A Man of the People',
     'In Dependence',
 
-    # Fantasy
-    "The Iron Trial",
-    "The Copper Gauntlet",
+    # Mythology
     "The Red Pyramid",
     "The Throne of Fire",
     "The Serpent's Shadow (Riordan novel)",
     "The Son of Sobek",
     "The Staff of Serapis",
     "The Crown of Ptolemy",
+    "The Last Olympian",
+    "The Sea of Monsters",
+
+    # Fantasy
+    "The Iron Trial",
+    "The Copper Gauntlet",
+    'Harry Potter and the Deathly Hallows',
+    'Harry Potter and the Half-Blood Prince',
+    'Harry Potter and the Order of the Phoenix',
+    'A Game of Thrones',
+    'The Hobbit',
+    'The Lord of the Rings',
 
     # Science Fiction
     "Artemis (novel)",
@@ -50,12 +60,6 @@ BOOKS = [
     "The Power of Positive Thinking",
     "The Gift of Fear",
 
-    # Uncategorized
-    "Digital Fortress",
-    "The Hunger Games",
-    "Catching Fire",
-    "Mockingjay",
-    "White Fang",
 ]
 
 
@@ -127,9 +131,87 @@ ARTICLES = [
     "Astrology",
     "Ichor",
     "Astrology",
+    "Thor",
+
+    # Sports
+    "Lionel Messi",
+    "Cristiano Ronaldo",
+    "FIFA World Cup",
+    "Premier League",
+
+    "Stephen Curry",
+    "Golden State Warriors",
 
 ]
 
+
+MUSIC = [
+
+    # Rap
+    "Rap God",
+    "Lose Yourself",
+    "Look at Me Now (Chris Brown song)",
+    "Panda (song)",
+    "Mockingbird (Eminem song)",
+    "Stan (song)",
+    "Humble (song)",
+    "DNA (Kendrick Lamar song)",
+
+    # Classical / Opera
+    "The Four Seasons (Vivaldi)",
+    "The Magic Flute",
+    "Don Giovanni",
+    "The Marriage of Figaro",
+    "The Barber of Seville",
+    "Carmen",
+    "Casanova",
+    "Otello",
+
+]
+
+
+RECIPES = [
+
+    # Nigerian / West African
+    "Jollof rice",
+    "Akara",
+    "Okpa",
+    "Abacha",
+    "Peppersoup",
+
+    # Asian, European, American
+    "Pizza",
+    "Pasta",
+    "Steak",
+    "Chicken as food",
+    "Barbecue",
+
+]
+
+
+GAMES = [
+    
+    # Basketball games
+    'NBA 2K23',
+    'NBA 2K22',
+
+    # Soccer
+    'FIFA 23',
+    'FIFA 22',
+    'FIFA 21',
+    'Football Manager 2023',
+    'Football Manager 2022',
+    'Pro Evolution Soccer 2019',
+    'Pro Evolution Soccer 2016',
+
+    # Fantasy
+    'God of War (2018 video game)',
+    'The Legend of Zelda',
+    'The Witcher 3: Wild Hunt',
+    'Final Fantasy XV',
+    'Hogwarts Legacy',
+    'Elden Ring'
+]
 
 
 def download(title):
@@ -171,7 +253,12 @@ def save(items, category):
 
 
 def main():
+    save(ARTICLES, 'articles')
     save(BOOKS, 'books')
+    save(TELEVISION, 'television')
+    save(GAMES, 'games')
+    save(RECIPES, 'recipes')
+    save(MUSIC, 'music')
 
 if __name__ == "__main__":
     main()

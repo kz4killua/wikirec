@@ -19,6 +19,8 @@ def load_data(categories):
 
             content['embedding'] = np.array(content['embedding'], dtype=np.float32)
 
+            content['category'] = category
+
             output.append(content)
 
     return output
