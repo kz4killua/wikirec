@@ -161,3 +161,7 @@ cython_debug/
 
 # Ignore article data
 data/
+data_old/
+recommendations/
+web/
+manage.py
