@@ -13,7 +13,7 @@ def main():
         "The Imitation Game",
     ]
     dislikes = [
-        "Nigeria",
+        "Drug discovery",
     ]
 
     recommendations = wikirec(likes, dislikes, ['articles'], 5, 5)
@@ -22,11 +22,4 @@ def main():
 
 
 if __name__ == "__main__":
-
-    import time
-    
-    tic = time.time()
     main()
-    toc = time.time()
-
-    print("Time:", toc - tic)
