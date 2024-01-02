@@ -1,5 +1,5 @@
 # Overview
-WikiRec is a content recommendation system powered by both Wikipedia and Azure Cognitive Services. It learns a users likes and dislikes and makes recommendations for books, movies, music, TV series, articles, games, recipes, etc. 
+WikiRec is a proof-of-concept content recommendation system powered by both Wikipedia and Azure Cognitive Services. It learns a users likes and dislikes and makes recommendations for books, movies, music, TV series, articles, games, recipes, etc. 
 
 The real strength of WikiRec is in its ability to make cross-category recommendations. A user's tastes in movies can help inform book recommendations. A user's tastes in games can help inform music recommendations. A user's tastes in articles can be used to recommend recipes. And much more!
 
