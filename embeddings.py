@@ -1,6 +1,8 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+from vectorstore import chunks
+from tqdm import tqdm
 
 
 load_dotenv()
@@ -19,12 +21,19 @@ def create_embeddings(input):
         for i in range(len(input)):
             input[i] = input[i][:max_characters]
 
-    # Create the embeddings
-    response = client.embeddings.create(
-        model="text-embedding-3-small",
-        input=input
-    )
-    embeddings = [
-        item['embedding'] for item in response.to_dict()['data']
-    ]
+
+    embeddings = []
+
+    # Create the embeddings for each chunk
+    for input_chunk in chunks(input, 2048, "Creating embeddings"):
+        response = client.embeddings.create(
+            model="text-embedding-3-small",
+            input=input_chunk
+        )
+
+        # Update the list of embeddings
+        embeddings.extend([
+            item['embedding'] for item in response.to_dict()['data']
+        ])
+
     return embeddings
