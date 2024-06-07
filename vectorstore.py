@@ -26,3 +26,15 @@ def upsert_vectors(vectors, namespace):
     """
     for vectors_chunk in chunks(vectors, 100, "Upserting vectors"):
         index.upsert(vectors_chunk, namespace=namespace)
+
+
+def query_vectors(vector, namespace, top_k=5):
+    """
+    https://docs.pinecone.io/reference/api/data-plane/query
+    """
+    return index.query(
+        namespace=namespace,
+        vector=vector,
+        top_k=top_k,
+        include_metadata=True
+    )
