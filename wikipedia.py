@@ -28,6 +28,21 @@ def search_content(search_query, number_of_results):
     return data
 
 
+def search_titles(search_query, number_of_results):
+    """
+    https://api.wikimedia.org/wiki/Core_REST_API/Reference/Search/Search_titles
+    """
+    language_code = 'en'
+    base_url = 'https://api.wikimedia.org/core/v1/wikipedia/'
+    endpoint = '/search/title'
+    url = base_url + language_code + endpoint
+    parameters = {'q': search_query, 'limit': number_of_results}
+    response = requests.get(url, headers=headers, params=parameters)
+    data = response.json()
+    return data
+
+
+
 def get_page_source(title):
     """
     https://api.wikimedia.org/wiki/Core_REST_API/Reference/Pages/Get_page_source
