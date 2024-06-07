@@ -73,14 +73,7 @@ def extract_wikipedia_pages(items, item_category):
 
         # Get the page source on Wikipedia
         page_object_with_source = wikipedia.get_page_source(page_object['key'])
-
-        # Parse the source into a valid string
-        source = page_object_with_source['source']
-        if page_object_with_source['content_model'] == "wikitext":
-            wikicode = mwparserfromhell.parse(source)
-            source = str(wikicode.strip_code(normalize=True))
-        else:
-            source = str(source)
+        source = parse_page_source(page_object_with_source)
 
         # Save the page
         if page_object['thumbnail']:
@@ -89,7 +82,7 @@ def extract_wikipedia_pages(items, item_category):
             thumbnail = ""
 
         extracted_pages.append({
-            'wikipedia_id': page_object['id'],
+            'wikipedia_id': str(page_object['id']),
             'wikipedia_key': page_object['key'],
             'wikipedia_title': page_object['title'],
             'title': item['title'],
@@ -98,6 +91,20 @@ def extract_wikipedia_pages(items, item_category):
         })
 
     return extracted_pages
+
+
+def parse_page_source(page_object):
+    """
+    Returns the source text from a Wikipedia page.
+    """
+    source = page_object['source']
+    if page_object['content_model'] == "wikitext":
+        wikicode = mwparserfromhell.parse(source)
+        source = str(wikicode.strip_code(normalize=True))
+    else:
+        source = str(source)
+
+    return source
 
 
 def save_items_to_csv(path, items):
