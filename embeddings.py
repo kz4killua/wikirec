@@ -15,12 +15,8 @@ def create_embeddings(input):
     max_tokens = 8000
     max_characters = max_tokens * 4
 
-    if isinstance(input, str):
-        input = input[:max_characters]
-    elif isinstance(input, list):
-        for i in range(len(input)):
-            input[i] = input[i][:max_characters]
-
+    for i in range(len(input)):
+        input[i] = input[i][:max_characters]
 
     embeddings = []
 
