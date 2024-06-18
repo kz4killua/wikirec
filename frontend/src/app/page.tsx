@@ -1,9 +1,12 @@
 import { Icon } from "@/components/shared/icon";
 import { Button } from "@/components/ui/button";
 import { Laurel } from "@/components/home/laurel";
-import { Rocket } from "lucide-react";
+import { TypingEffect } from "@/components/home/typing-effect";
+
+import { Check, Rocket, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { FeaturesCarousel } from "@/components/home/features-carousel";
 
 
 export default function Home() {
@@ -12,6 +15,7 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
+        <Features />
       </main>
     </div>
   );
@@ -21,9 +25,9 @@ export default function Home() {
 function Hero() {
   return (
     <section className="grid grid-rows-2 sm:grid-cols-2 sm:grid-rows-1 bg-blue-500/10">
-      <div className="flex flex-col gap-y-8 pt-40 pb-20 px-10 items-center justify-center min-h-dvh text-black">
+      <div className="flex flex-col gap-y-8 pt-40 pb-24 px-10 items-center justify-center min-h-dvh text-black">
         <HackathonWin />
-        <h1 className="font-bold text-4xl text-center leading-tight">
+        <h1 className="font-extrabold text-4xl text-center leading-tight">
           Get recommendations <br /> for anything
         </h1>
         <h2 className="text-center text-xl font-medium">
@@ -54,7 +58,7 @@ function Hero() {
 function Header() {
   return (
     <div className="pt-6 px-7 fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
-      <header className="w-full h-20 px-7 flex items-center justify-between rounded-xl bg-white shadow-lg border-2 border-blue-300">
+      <header className="w-full h-20 px-7 flex items-center justify-between rounded-xl bg-white shadow-lg border-2 border-blue-500">
         <Link href={"/"}>
           <div className="flex items-center gap-x-3">
             <Icon width={40} height={40} />
@@ -78,6 +82,73 @@ function Header() {
         </Link>
       </header>
     </div>
+  )
+}
+
+
+function Features() {
+
+  return (
+    <section className="py-28">
+
+      <h2 className="text-center font-extrabold text-4xl md:text-5xl tracking-tight mb-12 md:mb-20">
+        Tired of searching for new <TypingEffect className="text-blue-700" texts={[
+          "books", "movies", "series", "music", "games", "stuff"
+        ]} />?
+      </h2>
+
+      <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-8 md:gap-12">
+        <div className="bg-rose-100/75 text-rose-700 p-8 md:p-12 rounded-lg w-full max-w-md ">
+          <h3 className="font-bold text-lg mb-4">Without Wiki Rec 😟</h3>
+          <ul className="list-disc list-inside space-y-1.5 ">
+            <li className="flex gap-2 items-center">
+              <X size={12} />
+              Use separate sites for books, movies, etc.
+            </li>
+            <li className="flex gap-2 items-center">
+              <X size={12} />
+              No cross category recommendations
+            </li>
+            <li className="flex gap-2 items-center">
+              <X size={12} />
+              Manage 12+ different accounts
+            </li>
+            <li className="flex gap-2 items-center">
+              <X size={12} />
+              Sign up required
+            </li>
+          </ul>
+        </div>
+        <div className="bg-blue-100/70 text-blue-700 p-8 md:p-12 rounded-lg w-full max-w-md">
+          <h3 className="font-bold text-lg mb-4">With Wiki Rec 😎</h3>
+          <ul className="list-disc list-inside space-y-1.5 ">
+            <li className="flex gap-2 items-center">
+              <Check size={12} />
+              One site for all your recommendations
+            </li>
+            <li className="flex gap-2 items-center">
+              <Check size={12} />
+              Cross-category recommendations
+            </li>
+            <li className="flex gap-2 items-center">
+              <Check size={12} />
+              Only one account
+            </li>
+            <li className="flex gap-2 items-center">
+              <Check size={12} />
+              No sign-up required!
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="text-center mt-20">
+        <h2 className="text-3xl font-bold">"Your everything recommendation system"</h2>
+        <h3 className="text-gray-600">Find books, movies, games, music, and more, all from one place.</h3>
+        <FeaturesCarousel />
+      </div>
+
+    </section>
   )
 }
 
