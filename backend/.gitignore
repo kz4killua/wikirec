@@ -160,8 +160,8 @@ cython_debug/
 #.idea/
 
 # Ignore article data
-backend/data/raw
-backend/data/test
+data/raw
+data/test
 data_old/
 recommendations/
 web/
