@@ -1,21 +1,24 @@
 import { Icon } from "@/components/shared/icon";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select"
+
 import { Laurel } from "@/components/home/laurel";
 import { TypingEffect } from "@/components/home/typing-effect";
 
 import { Check, Rocket, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { FeaturesCarousel } from "@/components/home/features-carousel";
 
 
 export default function Home() {
   return (
-    <div className="">
+    <div className="overflow-y-auto">
       <Header />
       <main>
         <Hero />
         <Features />
+        <App />
       </main>
     </div>
   );
@@ -88,6 +91,29 @@ function Header() {
 
 function Features() {
 
+  const carouselImages = [
+    {
+      src: "/carousel-book.svg",
+      alt: "books"
+    },
+    {
+      src: "/carousel-controller.svg",
+      alt: "games"
+    },
+    {
+      src: "/carousel-film.svg",
+      alt: "films"
+    },
+    {
+      src: "/carousel-tv.svg",
+      alt: "tv-series"
+    },
+    {
+      src: "/carousel-headphones.svg",
+      alt: "music"
+    }
+  ]
+
   return (
     <section className="py-28">
 
@@ -143,9 +169,24 @@ function Features() {
       </div>
 
       <div className="text-center mt-20">
-        <h2 className="text-3xl font-bold">"Your everything recommendation system"</h2>
-        <h3 className="text-gray-600">Find books, movies, games, music, and more, all from one place.</h3>
-        <FeaturesCarousel />
+        <h2 className="text-3xl font-bold mb-4">"Your everything recommendation system"</h2>
+        <h3 className="text-gray-600 text-xl">Find books, movies, games, music, and more, all from one place.</h3>
+
+        <div className="grid grid-cols-5 mt-10 px-10">
+          {
+            carouselImages.map(item => 
+              <div className="p-5 flex items-center justify-center" key={item.src}>
+                <Image 
+                  src={item.src}
+                  alt={item.alt}
+                  height={100}
+                  width={100}
+                  className="grayscale opacity-75"
+                />
+              </div>
+            )
+          }
+        </div>
       </div>
 
     </section>
@@ -173,5 +214,84 @@ function HackathonWin() {
         />
       </div>
     </Link>
+  )
+}
+
+
+function App() {
+  return (
+    <section className="py-28">
+      <h2 className="text-center font-extrabold text-4xl md:text-5xl tracking-tight mb-6">
+        So...what do <span className="text-blue-700">you</span> like?
+      </h2>
+      <h3 className="text-gray-600 text-xl text-center">
+        Books, shows, music...whatever! 😊
+      </h3>
+      <div className="mt-10 max-w-2xl mx-auto">
+        <div className="flex flex-col gap-y-2">
+          <h4 className="text-sm font-medium">First, tell us what you like.</h4>
+          <UserPreference
+            placeholder="super awesome movie here..."
+          />
+          <UserPreference 
+            placeholder="or maybe your favorite book..."
+          />
+          <UserPreference 
+            placeholder="or the song that's been on repeat..."
+          />
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <h4 className="text-sm font-medium mt-5 mb-2">
+            Next, tell us what you are looking for.
+          </h4>
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="I want to find..." />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectGroup>
+                <SelectItem value="film">movies</SelectItem>
+                <SelectItem value="tv-series">tv series</SelectItem>
+                <SelectItem value="book">books</SelectItem>
+                <SelectItem value="song">songs</SelectItem>
+                <SelectItem value="game">games</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button type="submit">Get Recommendations</Button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+
+function UserPreference({ 
+  placeholder
+} : {
+  placeholder: string
+}) {
+  return (
+    <div className="flex w-full items-center space-x-2">
+      <Input 
+        type="text" 
+        placeholder={placeholder}
+        className="ring-blue-700"
+      />
+      <Select>
+        <SelectTrigger className="max-w-[160px]">
+          <SelectValue placeholder="item type" />
+        </SelectTrigger>
+        <SelectContent position="popper">
+          <SelectGroup>
+            <SelectItem value="film">movie</SelectItem>
+            <SelectItem value="tv-series">tv series</SelectItem>
+            <SelectItem value="book">book</SelectItem>
+            <SelectItem value="song">song</SelectItem>
+            <SelectItem value="game">game</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
   )
 }
