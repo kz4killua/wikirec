@@ -18,7 +18,7 @@ export default function Home() {
       <main>
         <Hero />
         <Features />
-        <App />
+        <GetStarted />
         <Footer />
       </main>
     </div>
@@ -41,7 +41,7 @@ function Hero() {
         <div>
           <Button className="px-12 h-16 rounded-xl">
             <Rocket className="w-5 h-5 mr-2" />
-            Try it now
+            Get started
           </Button>
         </div>
       </div>
@@ -129,20 +129,20 @@ function Features() {
           <h3 className="font-bold text-lg mb-4">Without Wiki Rec 😟</h3>
           <ul className="list-disc list-inside space-y-1.5 ">
             <li className="flex gap-2 items-center">
-              <X size={12} />
-              Use separate sites for books, movies, etc.
+              <X className="shrink-0" size={12} />
+              Use separate sites to find books, movies, games etc.
             </li>
             <li className="flex gap-2 items-center">
-              <X size={12} />
-              No cross category recommendations
+              <X className="shrink-0" size={12} />
+              No cross category recommendations.
             </li>
             <li className="flex gap-2 items-center">
-              <X size={12} />
-              Manage 12+ different accounts
+              <X className="shrink-0" size={12} />
+              Manage 12+ different accounts.
             </li>
             <li className="flex gap-2 items-center">
-              <X size={12} />
-              Sign up required
+              <X className="shrink-0" size={12} />
+              Sign up required.
             </li>
           </ul>
         </div>
@@ -150,29 +150,26 @@ function Features() {
           <h3 className="font-bold text-lg mb-4">With Wiki Rec 😎</h3>
           <ul className="list-disc list-inside space-y-1.5 ">
             <li className="flex gap-2 items-center">
-              <Check size={12} />
-              One site for all your recommendations
+              <Check className="shrink-0" size={12} />
+              Find books, movies, tv series, games, and music, all in one platform!
             </li>
             <li className="flex gap-2 items-center">
-              <Check size={12} />
-              Cross-category recommendations
+              <Check className="shrink-0" size={12} />
+              Get recommendations across categories e.g. find books similar to your favorite movies.
             </li>
             <li className="flex gap-2 items-center">
-              <Check size={12} />
-              Only one account
+              <Check className="shrink-0" size={12} />
+              Only one account for all your entertainment needs.
             </li>
             <li className="flex gap-2 items-center">
-              <Check size={12} />
-              No sign-up required!
+              <Check className="shrink-0" size={12} />
+              No sign-up required or credit cards required!
             </li>
           </ul>
         </div>
       </div>
 
       <div className="text-center mt-20">
-        <h2 className="text-3xl font-bold mb-4">"Your everything recommendation system"</h2>
-        <h3 className="text-gray-600 text-xl">Find books, movies, games, music, and more, all from one place.</h3>
-
         <div className="grid grid-cols-5 mt-10 px-10">
           {
             carouselImages.map(item => 
@@ -219,81 +216,30 @@ function HackathonWin() {
 }
 
 
-function App() {
+function GetStarted() {
   return (
-    <section className="py-28">
+    <section className="py-28 bg-blue-50">
       <h2 className="text-center font-extrabold text-4xl md:text-5xl tracking-tight mb-6">
-        So...what do <span className="text-blue-700">you</span> like?
+        So...let's <span className="text-blue-700">get started</span>.
       </h2>
       <h3 className="text-gray-600 text-xl text-center">
-        Books, shows, music...whatever! 😊
+        No sign-up or credit cards required! 😊
       </h3>
-      <div className="mt-10 max-w-2xl mx-auto">
-        <div className="flex flex-col gap-y-2">
-          <h4 className="text-sm font-medium">First, tell us what you like.</h4>
-          <UserPreference
-            placeholder="super awesome movie here..."
-          />
-          <UserPreference 
-            placeholder="or maybe your favorite book..."
-          />
-          <UserPreference 
-            placeholder="or the song that's been on repeat..."
-          />
-        </div>
-        <div className="flex flex-col gap-y-2">
-          <h4 className="text-sm font-medium mt-5 mb-2">
-            Next, tell us what you are looking for.
-          </h4>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="I want to find..." />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectGroup>
-                <SelectItem value="film">movies</SelectItem>
-                <SelectItem value="tv-series">tv series</SelectItem>
-                <SelectItem value="book">books</SelectItem>
-                <SelectItem value="song">songs</SelectItem>
-                <SelectItem value="game">games</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button type="submit">Get Recommendations</Button>
-        </div>
+      <div className="flex items-center justify-center my-5">
+        <Image
+          alt="person reading"
+          src={"/reading.svg"}
+          height={400}
+          width={400}
+        />
+      </div>
+      <div className="text-center mt-10">
+        <Button className="px-12 h-16 rounded-xl">
+          <Rocket className="w-5 h-5 mr-2" />
+          Get started
+        </Button>
       </div>
     </section>
-  )
-}
-
-
-function UserPreference({ 
-  placeholder
-} : {
-  placeholder: string
-}) {
-  return (
-    <div className="flex w-full items-center space-x-2">
-      <Input 
-        type="text" 
-        placeholder={placeholder}
-        className="ring-blue-700"
-      />
-      <Select>
-        <SelectTrigger className="max-w-[160px]">
-          <SelectValue placeholder="item type" />
-        </SelectTrigger>
-        <SelectContent position="popper">
-          <SelectGroup>
-            <SelectItem value="film">movie</SelectItem>
-            <SelectItem value="tv-series">tv series</SelectItem>
-            <SelectItem value="book">book</SelectItem>
-            <SelectItem value="song">song</SelectItem>
-            <SelectItem value="game">game</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
   )
 }
 
