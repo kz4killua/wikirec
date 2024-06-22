@@ -149,8 +149,7 @@ function SearchResults({
           <li 
             key={resultItem.id}
             className="w-full bg-white py-3 px-4 text-sm rounded-lg cursor-pointer hover:bg-blue-50"
-            // Warning: Using onClick here will cause the component to unmount before the event runs
-            onMouseDown={() => handleSearchResultClick(resultItem)}
+            onClick={() => handleSearchResultClick(resultItem)}
           >
             { resultItem.title }
           </li>
@@ -263,8 +262,6 @@ function UserPreference({
       
       <div 
         className="flex flex-col w-full relative group"
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
       >
         <Input 
           type="text" 
@@ -273,6 +270,9 @@ function UserPreference({
           onChange={handleInputChange}
           value={preference.query}
           disabled={saved}
+          // Add a small delay to give events time to trigger
+          onFocus={() => setTimeout(() => setIsFocused(true), 500)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 500)}
         />
         {
           status === 'waiting' ? 
