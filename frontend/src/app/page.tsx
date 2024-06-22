@@ -35,8 +35,8 @@ function Hero() {
           Get recommendations <br /> for anything
         </h1>
         <h2 className="text-center text-xl font-medium">
-          Find books, movies, music, TV series, games, and more. <br />
-          All from one platform. 🤩
+          Find books, movies, music, TV series, games and more. <br />
+          All in one platform. 🤩
         </h2>
         <div>
           <Button className="px-12 h-16 rounded-xl">
@@ -163,7 +163,7 @@ function Features() {
             </li>
             <li className="flex gap-2 items-center">
               <Check className="shrink-0" size={12} />
-              No sign-up required or credit cards required!
+              No sign-up or credit cards required!
             </li>
           </ul>
         </div>
