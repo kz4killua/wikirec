@@ -5,17 +5,29 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/shared/header"
 import { Footer } from "@/components/shared/footer"
+import React from "react"
 import { useEffect, useState } from "react"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Check, Ellipsis, LoaderCircle, X } from "lucide-react"
+import { Check, Ellipsis, LoaderCircle, Pencil, Search, X } from "lucide-react"
 import { ScrollToTopButton } from "@/components/shared/scroll-to-top-button"
 import { searchTitles } from "@/services/search"
 
 
 
-interface UserPreferenceProps {
+interface UserPreference {
+  id: number;
+  query: string;
   placeholder: string;
-  value: string;
+  wikipediaKey: string | null;
+  wikipediaTitle: string | null;
+}
+
+type RecommendationType = 'films' | 'tv-series' | 'games' | 'music' | 'books'
+
+interface SearchResult {
+  id: number;
+  key: string;
+  title: string;
 }
 
 
@@ -37,33 +49,31 @@ export default function App() {
 
 function UserChoices() {
 
-  const [userPreferences, setUserPreferences] = useState<UserPreferenceProps[]>([
-    {
-      value: "",
+  const [userPreferences, setUserPreferences] = useState<UserPreference[]>([
+    { 
+      id: 1, 
+      query: "", 
       placeholder: "super awesome movie here...",
+      wikipediaKey: null,
+      wikipediaTitle: null,
     },
-    {
-      value: "",
-      placeholder: "or maybe your favorite book..."
+    { 
+      id: 2, 
+      query: "", 
+      placeholder: "or maybe your favorite book...",
+      wikipediaKey: null,
+      wikipediaTitle: null
     },
-    {
-      value: "",
-      placeholder: "or the song that's been on repeat..."
+    { 
+      id: 3, 
+      query: "", 
+      placeholder: "or the song that's been on repeat...",
+      wikipediaKey: null,
+      wikipediaTitle: null
     }
-  ]);
+  ])
+  const [recommendationType, setRecommendationType] = useState<RecommendationType>()
 
-
-  // Update the state whenever the user's input changes
-  function handleUserPreferencesValueChange(index: number, newValue: string) {
-    setUserPreferences(userPreferences.map((item, i) => {
-        if (i === index) {
-          return { ...item, value: newValue }
-        } else {
-          return item
-        }
-      }
-    ))
-  }
 
   return (
     <section className="max-w-2xl mx-auto pb-24">
@@ -75,12 +85,12 @@ function UserChoices() {
       <div className="flex flex-col gap-y-2">
         <h4 className="text-sm font-medium">First, tell us what you like.</h4>
         { 
-          userPreferences.map((item, i) => 
+          userPreferences.map(item => 
             <UserPreference 
-              key={i} 
+              key={item.id} 
               preference={item}
-              index={i}
-              onUserPreferenceValueChange={handleUserPreferencesValueChange}
+              userPreferences={userPreferences}
+              setUserPreferences={setUserPreferences}
             />
           ) 
         }
@@ -116,33 +126,30 @@ function UserChoices() {
 
 
 function SearchResults({
-  focused, query
+  isFocused,
+  query,
+  searchResults,
+  setSearchResults,
+  handleSearchResultClick
 } : {
-  focused: boolean;
-  query: string
+  isFocused: boolean;
+  query: string;
+  searchResults: SearchResult[],
+  setSearchResults: React.Dispatch<React.SetStateAction<SearchResult[]>>,
+  handleSearchResultClick: (resultItem: SearchResult) => void
 }) {
 
-  const [searchResults, setSearchResults] = useState<string[]>([])
-
-  // Update search results whenever the input changes
-  useEffect(() => {
-    if (query.length === 0 || !focused) {
-      setSearchResults([])
-    } else {
-      searchTitles(query, 5)
-      .then(response => {
-        setSearchResults(response.data["pages"].map((p: { title: string }) => p.title))
-      })
-    }
-  }, [query, focused])
-
-
   return (
-    <ol className={`${(query.length > 0) && focused ? 'absolute' : 'hidden'} focus:bg-red-500 top-full mt-2 border rounded-lg w-full z-50 divide-y`}>
+    <ol className={`${(searchResults.length > 0) && isFocused ? 'absolute' : 'hidden'} focus:bg-red-500 top-full mt-2 border rounded-lg w-full z-50 divide-y`}>
       {
-        searchResults.map((result, i) => 
-          <li className="w-full bg-white py-3 px-4 text-sm rounded-lg cursor-pointer hover:bg-blue-50" key={i}>
-            { result }
+        searchResults.map(resultItem => 
+          <li 
+            key={resultItem.id}
+            className="w-full bg-white py-3 px-4 text-sm rounded-lg cursor-pointer hover:bg-blue-50"
+            // Warning: Using onClick here will cause the component to unmount before the event runs
+            onMouseDown={() => handleSearchResultClick(resultItem)}
+          >
+            { resultItem.title }
           </li>
         )
       }
@@ -188,17 +195,55 @@ function RecommendationItem() {
 
 
 function UserPreference({ 
-  index, preference, onUserPreferenceValueChange
+  preference, 
+  userPreferences,
+  setUserPreferences
 } : {
-  index: number;
-  preference: UserPreferenceProps, 
-  onUserPreferenceValueChange: (index: number, newValue: string) => void
-}
-) {
+  preference: UserPreference, 
+  userPreferences: UserPreference[],
+  setUserPreferences: React.Dispatch<React.SetStateAction<UserPreference[]>>
+}) {
 
   type UserPreferenceStatus = 'inactive' | 'waiting' | 'loading' | 'found' | 'not-found'
   const [status, setStatus] = useState<UserPreferenceStatus>('inactive')
   const [isFocused, setIsFocused] = useState(false)
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
+  
+  const saved = preference.wikipediaKey !== null
+
+  // Keep track of changes to each input query
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setUserPreferences(userPreferences.map(item => {
+      if (item.id === preference.id) {
+        return { ...item, query: event.target.value }
+      } else {
+        return item
+      }
+    }))
+  }
+
+  // When the user selects a search result, update the current 'preference'
+  function handleSearchResultClick(resultItem: SearchResult) {
+    setUserPreferences(userPreferences.map(item => {
+      if (item.id === preference.id) {
+        return { ...item, query: resultItem.title, wikipediaKey: resultItem.key, wikipediaTitle: resultItem.title  }
+      } else {
+        return item
+      }
+    }))
+  }
+
+  // Update search results whenever the query changes
+  useEffect(() => {
+    if ((preference.query.length === 0) || (saved)) {
+      setSearchResults([])
+    } else {
+      searchTitles(preference.query, 5)
+      .then(response => {
+        setSearchResults(response.data["pages"])
+      })
+    }
+  }, [preference.query, isFocused, saved])
 
   return (
     <div className="flex w-full items-start space-x-2 relative">
@@ -208,10 +253,11 @@ function UserPreference({
           type="text" 
           placeholder={preference.placeholder}
           className="ring-blue-700"
-          onChange={(event) => onUserPreferenceValueChange(index, event.target.value)}
-          value={preference.value}
+          onChange={handleInputChange}
+          value={preference.query}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          disabled={saved}
         />
         {
           status === 'waiting' ? 
@@ -233,23 +279,25 @@ function UserPreference({
           :
           <p></p>
         }
-        <SearchResults focused={isFocused} query={preference.value} />
+        <SearchResults 
+          isFocused={isFocused} 
+          query={preference.query}
+          searchResults={searchResults}
+          setSearchResults={setSearchResults}
+          handleSearchResultClick={handleSearchResultClick}
+        />
       </div>
 
-      <Select>
-        <SelectTrigger className="max-w-[160px]">
-          <SelectValue placeholder="item type" />
-        </SelectTrigger>
-        <SelectContent position="popper">
-          <SelectGroup>
-            <SelectItem value="film">movie</SelectItem>
-            <SelectItem value="tv-series">tv series</SelectItem>
-            <SelectItem value="book">book</SelectItem>
-            <SelectItem value="song">song</SelectItem>
-            <SelectItem value="game">game</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+      {
+        !saved ? 
+        <Button className="flex items-center justify-center">
+          <Search size={15} />
+        </Button>
+        :
+        <Button variant={"ghost"} className="flex items-center justify-center">
+          <Pencil size={15} />
+        </Button>
+      }
     </div>
   )
 }
