@@ -266,7 +266,7 @@ function UserPreference({
         <Input 
           type="text" 
           placeholder={preference.placeholder}
-          className="ring-blue-700"
+          className="ring-blue-700 disabled:opacity-100"
           onChange={handleInputChange}
           value={preference.query}
           disabled={saved}
