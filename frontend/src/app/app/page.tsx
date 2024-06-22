@@ -245,18 +245,30 @@ function UserPreference({
     }
   }, [preference.query, isFocused, saved])
 
+  function removeUserPreference() {
+    setUserPreferences(userPreferences.map(item => {
+      if (item.id === preference.id) {
+        return { ...item, id: item.id, query: "", wikipediaKey: null, wikipediaTitle: null  }
+      } else {
+        return item
+      }
+    }))
+  }
+
   return (
     <div className="flex w-full items-start space-x-2 relative">
       
-      <div className="flex flex-col w-full relative group">
+      <div 
+        className="flex flex-col w-full relative group"
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+      >
         <Input 
           type="text" 
           placeholder={preference.placeholder}
           className="ring-blue-700"
           onChange={handleInputChange}
           value={preference.query}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
           disabled={saved}
         />
         {
@@ -290,11 +302,17 @@ function UserPreference({
 
       {
         !saved ? 
-        <Button className="flex items-center justify-center">
+        <Button 
+          className="flex items-center justify-center"
+        >
           <Search size={15} />
         </Button>
         :
-        <Button variant={"ghost"} className="flex items-center justify-center">
+        <Button 
+          variant={"ghost"} 
+          className="flex items-center justify-center"
+          onClick={removeUserPreference}
+        >
           <Pencil size={15} />
         </Button>
       }
