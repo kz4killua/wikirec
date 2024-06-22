@@ -5,10 +5,18 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/shared/header"
 import { Footer } from "@/components/shared/footer"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Check, Ellipsis, LoaderCircle, X } from "lucide-react"
 import { ScrollToTopButton } from "@/components/shared/scroll-to-top-button"
+import { searchTitles } from "@/services/search"
+
+
+
+interface UserPreferenceProps {
+  placeholder: string;
+  value: string;
+}
 
 
 export default function App() {
@@ -17,7 +25,7 @@ export default function App() {
       <Header />
       <main className="pt-40">
         <UserChoices />
-        <SearchResults />
+        <Recommendations />
       </main>
       <Footer />
       <ScrollToTopButton />
@@ -28,6 +36,35 @@ export default function App() {
 
 
 function UserChoices() {
+
+  const [userPreferences, setUserPreferences] = useState<UserPreferenceProps[]>([
+    {
+      value: "",
+      placeholder: "super awesome movie here...",
+    },
+    {
+      value: "",
+      placeholder: "or maybe your favorite book..."
+    },
+    {
+      value: "",
+      placeholder: "or the song that's been on repeat..."
+    }
+  ]);
+
+
+  // Update the state whenever the user's input changes
+  function handleUserPreferencesValueChange(index: number, newValue: string) {
+    setUserPreferences(userPreferences.map((item, i) => {
+        if (i === index) {
+          return { ...item, value: newValue }
+        } else {
+          return item
+        }
+      }
+    ))
+  }
+
   return (
     <section className="max-w-2xl mx-auto pb-24">
 
@@ -37,15 +74,16 @@ function UserChoices() {
 
       <div className="flex flex-col gap-y-2">
         <h4 className="text-sm font-medium">First, tell us what you like.</h4>
-        <UserPreference
-          placeholder="super awesome movie here..."
-        />
-        <UserPreference 
-          placeholder="or maybe your favorite book..."
-        />
-        <UserPreference 
-          placeholder="or the song that's been on repeat..."
-        />
+        { 
+          userPreferences.map((item, i) => 
+            <UserPreference 
+              key={i} 
+              preference={item}
+              index={i}
+              onUserPreferenceValueChange={handleUserPreferencesValueChange}
+            />
+          ) 
+        }
       </div>
       <div className="flex flex-col gap-y-2">
         <h4 className="text-sm font-medium mt-5 mb-2">
@@ -77,7 +115,43 @@ function UserChoices() {
 }
 
 
-function SearchResults() {
+function SearchResults({
+  focused, query
+} : {
+  focused: boolean;
+  query: string
+}) {
+
+  const [searchResults, setSearchResults] = useState<string[]>([])
+
+  // Update search results whenever the input changes
+  useEffect(() => {
+    if (query.length === 0 || !focused) {
+      setSearchResults([])
+    } else {
+      searchTitles(query, 5)
+      .then(response => {
+        setSearchResults(response.data["pages"].map((p: { title: string }) => p.title))
+      })
+    }
+  }, [query, focused])
+
+
+  return (
+    <ol className={`${(query.length > 0) && focused ? 'absolute' : 'hidden'} focus:bg-red-500 top-full mt-2 border rounded-lg w-full z-50 divide-y`}>
+      {
+        searchResults.map((result, i) => 
+          <li className="w-full bg-white py-3 px-4 text-sm rounded-lg cursor-pointer hover:bg-blue-50" key={i}>
+            { result }
+          </li>
+        )
+      }
+    </ol>
+  )
+}
+
+
+function Recommendations() {
   return (
     <section className="py-24 bg-blue-50">
       <div>
@@ -114,21 +188,30 @@ function RecommendationItem() {
 
 
 function UserPreference({ 
-  placeholder
+  index, preference, onUserPreferenceValueChange
 } : {
-  placeholder: string
-}) {
+  index: number;
+  preference: UserPreferenceProps, 
+  onUserPreferenceValueChange: (index: number, newValue: string) => void
+}
+) {
 
   type UserPreferenceStatus = 'inactive' | 'waiting' | 'loading' | 'found' | 'not-found'
   const [status, setStatus] = useState<UserPreferenceStatus>('inactive')
+  const [isFocused, setIsFocused] = useState(false)
 
   return (
-    <div className="flex w-full items-start space-x-2">
-      <div className="flex flex-col w-full">
+    <div className="flex w-full items-start space-x-2 relative">
+      
+      <div className="flex flex-col w-full relative group">
         <Input 
           type="text" 
-          placeholder={placeholder}
+          placeholder={preference.placeholder}
           className="ring-blue-700"
+          onChange={(event) => onUserPreferenceValueChange(index, event.target.value)}
+          value={preference.value}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
         />
         {
           status === 'waiting' ? 
@@ -150,7 +233,9 @@ function UserPreference({
           :
           <p></p>
         }
+        <SearchResults focused={isFocused} query={preference.value} />
       </div>
+
       <Select>
         <SelectTrigger className="max-w-[160px]">
           <SelectValue placeholder="item type" />
