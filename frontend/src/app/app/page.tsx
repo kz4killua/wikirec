@@ -22,7 +22,7 @@ interface UserPreference {
   wikipediaTitle: string | null;
 }
 
-type RecommendationType = 'films' | 'tv-series' | 'games' | 'music' | 'books'
+type RecommendationType = 'films' | 'tv-series' | 'games' | 'songs' | 'books'
 
 interface SearchResult {
   id: number;
@@ -72,7 +72,7 @@ function UserChoices() {
       wikipediaTitle: null
     }
   ])
-  const [recommendationType, setRecommendationType] = useState<RecommendationType>()
+  const [recommendationType, setRecommendationType] = useState<string>()
 
 
   return (
@@ -99,17 +99,20 @@ function UserChoices() {
         <h4 className="text-sm font-medium mt-5 mb-2">
           Next, tell us what you are looking for.
         </h4>
-        <Select>
+        <Select 
+          value={recommendationType} 
+          onValueChange={(value) => setRecommendationType(value)}
+        >
           <SelectTrigger>
             <SelectValue placeholder="I want to find..." />
           </SelectTrigger>
           <SelectContent position="popper">
             <SelectGroup>
-              <SelectItem value="film">movies</SelectItem>
+              <SelectItem value="films">movies</SelectItem>
               <SelectItem value="tv-series">tv series</SelectItem>
-              <SelectItem value="book">books</SelectItem>
-              <SelectItem value="song">songs</SelectItem>
-              <SelectItem value="game">games</SelectItem>
+              <SelectItem value="books">books</SelectItem>
+              <SelectItem value="songs">songs</SelectItem>
+              <SelectItem value="games">games</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
