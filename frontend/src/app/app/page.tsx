@@ -15,6 +15,7 @@ import { toast } from "sonner"
 import { getRecommendations } from "@/services/recommendations"
 import { Recommendation } from "@/types"
 import Image from "next/image"
+import Link from "next/link"
 
 
 
@@ -242,16 +243,30 @@ function RecommendationItem({
 }: {
   item: Recommendation
 }) {
+
+
+  function handleClick() {
+    const url = `https://www.google.com/search?${
+        new URLSearchParams({
+          'q': item.title,
+        }).toString()
+    }`
+    window.open(url, "_blank")
+  }
+
   return (
     <div className="flex flex-col gap-y-2">
-      <div className="w-full relative h-80 bg-gray-700 rounded-xl border-4 border-gray-400 hover:border-blue-700 transition-colors duration-500 cursor-pointer flex items-center justify-center overflow-hidden">
+      <div 
+        className="w-full relative h-80 bg-gray-700 rounded-xl border-4 border-gray-400 hover:border-blue-700 transition-colors duration-500 cursor-pointer flex items-center justify-center overflow-hidden"
+        onClick={handleClick}
+      >
         {
           item.thumbnail &&
           <Image 
-            src={item.thumbnail}
-            alt={item.title}
-            fill
-            className=""
+          src={item.thumbnail}
+          alt={item.title}
+          fill
+          className=""
           />
         }
       </div>
