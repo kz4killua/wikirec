@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/shared/header"
 import { Footer } from "@/components/shared/footer"
-import React from "react"
+import React, { useRef } from "react"
 import { useEffect, useState } from "react"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Check, Ellipsis, LoaderCircle, Pencil, Search, X } from "lucide-react"
+import { Check, Ellipsis, Loader, LoaderCircle, Pencil, Search, X } from "lucide-react"
 import { ScrollToTopButton } from "@/components/shared/scroll-to-top-button"
 import { searchTitles } from "@/services/search"
 import { toast } from "sonner"
@@ -39,16 +39,19 @@ interface SearchResult {
 export default function App() {
 
   const [recommendations, setRecommendations] = useState<Recommendation[]>([])
+  const recommendationsRef = useRef<HTMLElement>(null)
 
   return (
     <div className="overflow-y-auto">
       <Header />
       <main className="pt-40">
         <UserChoices 
+          recommendationsRef={recommendationsRef}
           recommendations={recommendations}
           setRecommendations={setRecommendations}
         />
-        <RecommendationsList 
+        <RecommendationsList
+          recommendationsRef={recommendationsRef}
           recommendations={recommendations}
           setRecommendations={setRecommendations}
         />
@@ -62,10 +65,11 @@ export default function App() {
 
 
 function UserChoices({
-  recommendations, setRecommendations
+  recommendations, setRecommendations, recommendationsRef
 }: {
   recommendations: Recommendation[],
-  setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>
+  setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>,
+  recommendationsRef: React.RefObject<HTMLElement>
 }) {
 
   const [userPreferences, setUserPreferences] = useState<UserPreference[]>([
@@ -92,6 +96,7 @@ function UserChoices({
     }
   ])
   const [recommendationType, setRecommendationType] = useState<string>()
+  const [loading, setLoading] = useState(false)
 
 
   async function handleGetRecommendations() {
@@ -115,13 +120,21 @@ function UserChoices({
       return
     }
 
-    // TODO: Make recommendations
-    const recommendations = await getRecommendations(
+    // Make recommendations
+    setLoading(true)
+    getRecommendations(
       wikipediaKeys as string[], recommendationType
     )
-    setRecommendations(recommendations)
+    .then(recommendations => setRecommendations(recommendations))
+    .then(() => {
+      // Scroll the user to the recommendations section
+      recommendationsRef.current?.scrollIntoView({
+        behavior: "smooth"
+      })
+    })
+    .finally(() => setLoading(false))
+    
   }
-
 
   return (
     <section className="max-w-2xl mx-auto pb-24">
@@ -165,9 +178,14 @@ function UserChoices({
           </SelectContent>
         </Select>
         <Button 
-          className="mt-6"
+          className="mt-6 flex gap-x-1"
           onClick={handleGetRecommendations}
+          disabled={loading}
         >
+          {
+            loading && 
+            <Loader size={12} className="animate-spin"/>
+          }
           Get Recommendations 🍿
         </Button>
       </div>
@@ -209,16 +227,20 @@ function SearchResults({
 
 
 function RecommendationsList({
+  recommendationsRef,
   recommendations, 
   setRecommendations
 } : {
+  recommendationsRef: React.RefObject<HTMLElement>,
   recommendations: Recommendation[],
   setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>
 }) {
 
-
   return (
-    <section className={`${recommendations.length === 0 ? 'hidden' : ''} py-24 bg-blue-50`}>
+    <section 
+      className={`${recommendations.length === 0 ? 'hidden' : ''} py-24 bg-blue-50 scroll-mt-20`}
+      ref={recommendationsRef}
+    >
       <div>
         <h1 className="font-extrabold text-5xl mb-14 px-20">
           We found some <span className="text-blue-700">movies</span> you'll <span className="text-blue-700">love</span>
