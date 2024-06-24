@@ -11,6 +11,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Check, Ellipsis, LoaderCircle, Pencil, Search, X } from "lucide-react"
 import { ScrollToTopButton } from "@/components/shared/scroll-to-top-button"
 import { searchTitles } from "@/services/search"
+import { toast } from "sonner"
+import { getRecommendations } from "@/services/recommendations"
+import { Recommendation } from "@/types"
 
 
 
@@ -32,12 +35,21 @@ interface SearchResult {
 
 
 export default function App() {
+
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([])
+
   return (
     <div className="overflow-y-auto">
       <Header />
       <main className="pt-40">
-        <UserChoices />
-        <Recommendations />
+        <UserChoices 
+          recommendations={recommendations}
+          setRecommendations={setRecommendations}
+        />
+        <RecommendationsList 
+          recommendations={recommendations}
+          setRecommendations={setRecommendations}
+        />
       </main>
       <Footer />
       <ScrollToTopButton />
@@ -47,7 +59,12 @@ export default function App() {
 
 
 
-function UserChoices() {
+function UserChoices({
+  recommendations, setRecommendations
+}: {
+  recommendations: Recommendation[],
+  setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>
+}) {
 
   const [userPreferences, setUserPreferences] = useState<UserPreference[]>([
     { 
@@ -73,6 +90,35 @@ function UserChoices() {
     }
   ])
   const [recommendationType, setRecommendationType] = useState<string>()
+
+
+  async function handleGetRecommendations() {
+
+    // Get the wikipediaKeys of all selected items
+    const wikipediaKeys = userPreferences
+    .filter(item => 
+      item.wikipediaKey !== null && item.wikipediaKey !== undefined
+    )
+    .map(item => item.wikipediaKey)
+
+    // Users must have at least one preference
+    if (wikipediaKeys.length === 0) {
+      toast.error("You must enter at least one movie, book, tv series, song, or game before proceeding.")
+      return
+    }
+
+    // Users must pick a recommendation type before submitting
+    if (!recommendationType) {
+      toast.error("Please choose a recommendation type before proceeding.")
+      return
+    }
+
+    // TODO: Make recommendations
+    const recommendations = await getRecommendations(
+      wikipediaKeys as string[], recommendationType
+    )
+    setRecommendations(recommendations)
+  }
 
 
   return (
@@ -118,7 +164,7 @@ function UserChoices() {
         </Select>
         <Button 
           className="mt-6"
-          type="submit"
+          onClick={handleGetRecommendations}
         >
           Get Recommendations 🍿
         </Button>
@@ -160,20 +206,28 @@ function SearchResults({
 }
 
 
-function Recommendations() {
+function RecommendationsList({
+  recommendations, 
+  setRecommendations
+} : {
+  recommendations: Recommendation[],
+  setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>
+}) {
+
+
   return (
-    <section className="py-24 bg-blue-50">
+    <section className={`${recommendations.length === 0 ? 'hidden' : ''} py-24 bg-blue-50`}>
       <div>
         <h1 className="font-extrabold text-5xl mb-14 px-20">
           We found some <span className="text-blue-700">movies</span> you'll <span className="text-blue-700">love</span>
         </h1>
 
         <div className="grid grid-cols-4 gap-10 px-20">
-          <RecommendationItem />
-          <RecommendationItem />
-          <RecommendationItem />
-          <RecommendationItem />
-          <RecommendationItem />
+          {
+            recommendations.map(
+              item => <RecommendationItem item={item} />
+            )
+          }
         </div>
 
       </div>
@@ -182,14 +236,18 @@ function Recommendations() {
 }
 
 
-function RecommendationItem() {
+function RecommendationItem({
+  item
+}: {
+  item: Recommendation
+}) {
   return (
     <div className="flex flex-col gap-y-2">
       <div className="w-full h-80 bg-gray-700 rounded-xl border-4 border-gray-400 hover:border-blue-700 transition-colors duration-500 cursor-pointer flex items-center justify-center">
 
       </div>
       <p className="font-bold">
-        Federer: Twelve Final Days
+        { item.title }
       </p>
     </div>
   )
@@ -270,7 +328,7 @@ function UserPreference({
           onChange={handleInputChange}
           value={preference.query}
           disabled={saved}
-          // Add a small delay to give events time to trigger
+          // Add a small delay to give other events time to trigger
           onFocus={() => setTimeout(() => setIsFocused(true), 500)}
           onBlur={() => setTimeout(() => setIsFocused(false), 500)}
         />
