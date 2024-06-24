@@ -1,4 +1,4 @@
-const axios = require('axios').default;
+import { axios } from "./base"
 
 
 export async function searchTitles(q: string, limit: number) {
