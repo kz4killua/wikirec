@@ -191,7 +191,7 @@ function GetStarted() {
   return (
     <section className="py-28 bg-blue-50">
       <h2 className="text-center font-extrabold text-4xl md:text-5xl tracking-tight mb-6">
-        So...let's <span className="text-blue-700">get started</span>.
+        So...let&apos;s <span className="text-blue-700">get started</span>.
       </h2>
       <h3 className="text-gray-600 text-xl text-center">
         No sign-up or credit cards required! 😊

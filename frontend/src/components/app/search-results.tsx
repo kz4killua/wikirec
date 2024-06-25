@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect, useState, act } from "react"
+import React, { useCallback, useRef, useEffect, useState, useMemo } from "react"
 import debounce from 'lodash.debounce';
 import { searchTitles } from "@/services/search";
 
@@ -27,6 +27,7 @@ export function SearchResults({
     handleSearchResultClick(resultItem)
   }
 
+  // Based on the query, update search results
   function updateSearchResults(query: string) {
     if ((query.length === 0)) {
       setSearchResults([])
@@ -38,19 +39,25 @@ export function SearchResults({
     }
   }
 
-  const debouncedOnChange = useCallback(
+  // https://kyleshevlin.com/debounce-and-throttle-callbacks-with-react-hooks/
+  const debouncedSearch = useMemo(() =>
     debounce((value) => {
       updateSearchResults(value)
-    }, 200), 
-    [query]
+    }, 200)
+  , [])
+
+  const debouncedOnChange = useCallback((query: string) => {
+      debouncedSearch(query)
+    }, 
+    [debouncedSearch]
   );
 
   useEffect(() => {
     debouncedOnChange(query);
     return () => {
-        debouncedOnChange.cancel();
+        debouncedSearch.cancel();
     };
-  }, [query, debouncedOnChange]);
+  }, [query, debouncedOnChange, debouncedSearch]);
 
   return (
     <ol className={`${(searchResults.length > 0) ? 'absolute' : 'hidden'} bg-white top-full mt-2 border rounded-lg w-full z-50 divide-y`}>

@@ -214,13 +214,13 @@ function RecommendationsList({
     >
       <div>
         <h1 className="font-extrabold text-5xl mb-14 px-20">
-          We found some <span className="text-blue-700">{recommendationType}</span> you'll <span className="text-blue-700">love</span>
+          We found some <span className="text-blue-700">{recommendationType}</span> you&apos;ll <span className="text-blue-700">love</span>
         </h1>
 
         <div className="grid grid-cols-4 gap-10 px-20">
           {
             recommendations.map(
-              item => <RecommendationItem item={item} />
+              item => <RecommendationItem key={item.wikipedia_id} item={item} />
             )
           }
         </div>
