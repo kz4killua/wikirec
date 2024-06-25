@@ -12,11 +12,9 @@ export interface SearchResult {
 
 
 export function SearchResults({
-  active,
   query,
   handleSearchResultClick
 } : {
-  active: boolean;
   query: string;
   handleSearchResultClick: (resultItem: SearchResult) => void
 }) {
@@ -54,9 +52,8 @@ export function SearchResults({
     };
   }, [query, debouncedOnChange]);
 
-
   return (
-    <ol className={`${(searchResults.length > 0) && active ? 'absolute' : 'hidden'} bg-white top-full mt-2 border rounded-lg w-full z-50 divide-y`}>
+    <ol className={`${(searchResults.length > 0) ? 'absolute' : 'hidden'} bg-white top-full mt-2 border rounded-lg w-full z-50 divide-y`}>
       {
         searchResults.map(resultItem => 
           <li 

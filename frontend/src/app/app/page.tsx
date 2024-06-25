@@ -266,7 +266,7 @@ function UserPreference({
 
   const [query, setQuery] = useState("")
   const [isFocused, setIsFocused] = useState(false)
-  const saved = preference.wikipediaKey !== null
+  const [saved, setSaved] = useState(false)
 
   // Keep track of changes to each input query
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -276,6 +276,7 @@ function UserPreference({
   // When the user selects a search result, update the current 'preference'
   function handleSearchResultClick(resultItem: SearchResult) {
     setQuery(resultItem.title)
+    setSaved(true)
     setUserPreferences(userPreferences.map(item => {
       if (item.id === preference.id) {
         return { ...item, wikipediaKey: resultItem.key, wikipediaTitle: resultItem.title  }
@@ -287,6 +288,8 @@ function UserPreference({
 
   // Allow the user to delete a preference
   function removeUserPreference() {
+    setQuery("")
+    setSaved(false)
     setUserPreferences(userPreferences.map(item => {
       if (item.id === preference.id) {
         return { ...item, wikipediaKey: null, wikipediaTitle: null  }
@@ -294,7 +297,6 @@ function UserPreference({
         return item
       }
     }))
-    setQuery("")
   }
 
   return (
@@ -314,11 +316,13 @@ function UserPreference({
           onFocus={() => setTimeout(() => setIsFocused(true), 500)}
           onBlur={() => setTimeout(() => setIsFocused(false), 500)}
         />
-        <SearchResults 
-          active={isFocused || !saved} 
-          query={query}
-          handleSearchResultClick={handleSearchResultClick}
-        />
+        {
+          (isFocused && !saved) && 
+          <SearchResults 
+            query={query}
+            handleSearchResultClick={handleSearchResultClick}
+          />
+        }
       </div>
 
       {
