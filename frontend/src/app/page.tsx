@@ -87,7 +87,7 @@ function Features() {
   ]
 
   return (
-    <section className="py-28">
+    <section className="py-28 px-10">
 
       <h2 className="text-center font-extrabold text-4xl md:text-5xl tracking-tight mb-12 md:mb-20">
         Tired of searching for new <TypingEffect className="text-blue-700" texts={[
@@ -140,17 +140,17 @@ function Features() {
         </div>
       </div>
 
-      <div className="text-center mt-20">
-        <div className="grid grid-cols-5 mt-10 px-10">
+      <div className="text-center mt-10 sm:mt-20">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-x-10 mt-10 sm:px-10">
           {
             carouselImages.map(item => 
               <div className="p-5 flex items-center justify-center" key={item.src}>
                 <Image 
                   src={item.src}
                   alt={item.alt}
-                  height={100}
-                  width={100}
-                  className="grayscale opacity-75"
+                  height={500}
+                  width={500}
+                  className="grayscale opacity-50"
                 />
               </div>
             )
