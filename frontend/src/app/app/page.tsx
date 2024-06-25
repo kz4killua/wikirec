@@ -16,6 +16,7 @@ import { getRecommendations } from "@/services/recommendations"
 import { Recommendation } from "@/types"
 import Image from "next/image"
 import Link from "next/link"
+import { DebouncedInput } from "@/components/shared/debounced-input"
 
 
 
@@ -367,7 +368,7 @@ function UserPreference({
       <div 
         className="flex flex-col w-full relative group"
       >
-        <Input 
+        <DebouncedInput
           type="text" 
           placeholder={preference.placeholder}
           className="ring-blue-700 disabled:opacity-100"
