@@ -89,7 +89,7 @@ function Features() {
   return (
     <section className="py-28 px-10">
 
-      <h2 className="text-center font-extrabold text-4xl md:text-5xl tracking-tight mb-12 md:mb-20">
+      <h2 className="text-center font-extrabold text-3xl md:text-4xl tracking-tight mb-12 md:mb-20">
         Tired of searching for new <TypingEffect className="text-blue-700" texts={[
           "books", "movies", "series", "music", "games", "stuff"
         ]} />?
@@ -189,8 +189,8 @@ function HackathonWin() {
 
 function GetStarted() {
   return (
-    <section className="py-28 bg-blue-50">
-      <h2 className="text-center font-extrabold text-4xl md:text-5xl tracking-tight mb-6">
+    <section className="py-28 bg-blue-50 px-10">
+      <h2 className="text-center font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight mb-6">
         So...let&apos;s <span className="text-blue-700">get started</span>.
       </h2>
       <h3 className="text-gray-600 text-xl text-center">
