@@ -28,12 +28,11 @@ interface UserPreference {
   wikipediaTitle: string | null;
 }
 
-type RecommendationType = 'films' | 'tv-series' | 'games' | 'songs' | 'books'
-
 interface SearchResult {
   id: number;
   key: string;
   title: string;
+  description: string;
 }
 
 
@@ -218,7 +217,12 @@ function SearchResults({
             className="w-full bg-white py-3 px-4 text-sm rounded-lg cursor-pointer hover:bg-blue-50"
             onClick={() => handleSearchResultClick(resultItem)}
           >
-            { resultItem.title }
+            <h3 className="font-medium mb-1">
+              { resultItem.title }
+            </h3>
+            <p className="text-gray-600 text-xs">
+              { resultItem.description }
+            </p>
           </li>
         )
       }
