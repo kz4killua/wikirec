@@ -13,9 +13,13 @@ export interface SearchResult {
 
 export function SearchResults({
   query,
+  searching,
+  setSearching,
   handleSearchResultClick
 } : {
   query: string;
+  searching: boolean;
+  setSearching: React.Dispatch<React.SetStateAction<boolean>>,
   handleSearchResultClick: (resultItem: SearchResult) => void
 }) {
 
@@ -32,10 +36,12 @@ export function SearchResults({
     if ((query.length === 0)) {
       setSearchResults([])
     } else {
+      setSearching(true)
       searchTitles(query, 5)
       .then(response => {
         setSearchResults(response.data["pages"])
       })
+      .then(() => setSearching(false))
     }
   }
 

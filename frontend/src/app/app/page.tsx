@@ -284,6 +284,7 @@ function UserPreference({
   const [query, setQuery] = useState("")
   const [isFocused, setIsFocused] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [searching, setSearching] = useState(false)
 
   // Keep track of changes to each input query
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -346,6 +347,8 @@ function UserPreference({
           (isFocused && !saved) && 
           <SearchResults 
             query={query}
+            searching={searching}
+            setSearching={setSearching}
             handleSearchResultClick={handleSearchResultClick}
           />
         }
@@ -356,7 +359,12 @@ function UserPreference({
         <Button 
           className="flex items-center justify-center"
         >
-          <Search size={15} />
+          {
+            searching ?
+            <Loader size={15} className="animate-spin" />
+            :
+            <Search size={15} />
+          }
         </Button>
         :
         <Button 
