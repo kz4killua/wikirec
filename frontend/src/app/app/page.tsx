@@ -163,7 +163,7 @@ function UserChoices({
           value={recommendationType} 
           onValueChange={(value) => setRecommendationType(value)}
         >
-          <SelectTrigger>
+          <SelectTrigger className={`${recommendationType ? 'bg-blue-50' : ''}`}>
             <SelectValue placeholder="I want to find..." />
           </SelectTrigger>
           <SelectContent position="popper">
