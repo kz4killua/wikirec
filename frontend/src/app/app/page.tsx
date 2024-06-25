@@ -25,9 +25,13 @@ interface UserPreference {
 }
 
 
+type RecommendationType = string | undefined; 
+
+
 export default function App() {
 
   const [recommendations, setRecommendations] = useState<Recommendation[]>([])
+  const [recommendationType, setRecommendationType] = useState<RecommendationType>()
   const recommendationsRef = useRef<HTMLElement>(null)
 
   return (
@@ -38,11 +42,15 @@ export default function App() {
           recommendationsRef={recommendationsRef}
           recommendations={recommendations}
           setRecommendations={setRecommendations}
+          recommendationType={recommendationType}
+          setRecommendationType={setRecommendationType}
         />
         <RecommendationsList
           recommendationsRef={recommendationsRef}
           recommendations={recommendations}
           setRecommendations={setRecommendations}
+          recommendationType={recommendationType}
+          setRecommendationType={setRecommendationType}
         />
       </main>
       <Footer />
@@ -54,11 +62,17 @@ export default function App() {
 
 
 function UserChoices({
-  recommendations, setRecommendations, recommendationsRef
+  recommendations, 
+  setRecommendations, 
+  recommendationsRef, 
+  recommendationType, 
+  setRecommendationType
 }: {
   recommendations: Recommendation[],
   setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>,
-  recommendationsRef: React.RefObject<HTMLElement>
+  recommendationsRef: React.RefObject<HTMLElement>,
+  recommendationType: RecommendationType,
+  setRecommendationType: React.Dispatch<React.SetStateAction<RecommendationType>>
 }) {
 
   const [userPreferences, setUserPreferences] = useState<UserPreference[]>([
@@ -81,7 +95,6 @@ function UserChoices({
       wikipediaTitle: null
     }
   ])
-  const [recommendationType, setRecommendationType] = useState<string>()
   const [loading, setLoading] = useState(false)
 
 
@@ -183,11 +196,15 @@ function UserChoices({
 function RecommendationsList({
   recommendationsRef,
   recommendations, 
-  setRecommendations
+  setRecommendations,
+  recommendationType,
+  setRecommendationType
 } : {
   recommendationsRef: React.RefObject<HTMLElement>,
   recommendations: Recommendation[],
-  setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>
+  setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>,
+  recommendationType: RecommendationType,
+  setRecommendationType: React.Dispatch<React.SetStateAction<RecommendationType>>
 }) {
 
   return (
@@ -197,7 +214,7 @@ function RecommendationsList({
     >
       <div>
         <h1 className="font-extrabold text-5xl mb-14 px-20">
-          We found some <span className="text-blue-700">movies</span> you'll <span className="text-blue-700">love</span>
+          We found some <span className="text-blue-700">{recommendationType}</span> you'll <span className="text-blue-700">love</span>
         </h1>
 
         <div className="grid grid-cols-4 gap-10 px-20">
