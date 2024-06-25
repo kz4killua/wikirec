@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Header } from "@/components/shared/header"
 import { Footer } from "@/components/shared/footer"
 import React, { useCallback, useRef, useEffect, useState } from "react"
-import { Loader, Search, Trash2 } from "lucide-react"
+import { Info, Loader, Search, Trash2 } from "lucide-react"
 import { ScrollToTopButton } from "@/components/shared/scroll-to-top-button"
 import { searchTitles } from "@/services/search"
 import { toast } from "sonner"
@@ -308,14 +308,23 @@ function UserPreference({
         <Input
           type="text" 
           placeholder={preference.placeholder}
-          className="ring-blue-700 disabled:opacity-100"
+          className="ring-blue-700 disabled:opacity-100 disabled:bg-blue-50"
           onChange={handleInputChange}
           value={query}
           disabled={saved}
           // Add a small delay to give other events time to trigger
-          onFocus={() => setTimeout(() => setIsFocused(true), 500)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 500)}
+          onFocus={() => setTimeout(() => setIsFocused(true), 200)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
         />
+
+        {
+          (!isFocused && query.length > 0 && !saved) &&
+          <p className="flex gap-x-1 items-center text-xs mt-1 text-rose-700">
+            <Info size={12} className="fill-rose-700 stroke-white" />
+            <span>You must click a valid item from the search list.</span>
+          </p>
+        }
+
         {
           (isFocused && !saved) && 
           <SearchResults 
