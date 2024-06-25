@@ -30,29 +30,29 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="grid grid-rows-2 sm:grid-cols-2 sm:grid-rows-1 bg-blue-500/10">
-      <div className="flex flex-col gap-y-8 pt-40 pb-24 px-10 items-center justify-center min-h-dvh text-black">
+    <section className="flex flex-col sm:grid sm:grid-cols-2 bg-blue-500/10 pt-40 px-10">
+      <div className="flex flex-col gap-y-8 pb-24 items-center justify-center sm:min-h-dvh text-black">
         <HackathonWin />
-        <h1 className="font-extrabold text-4xl text-center leading-tight">
+        <h1 className="font-extrabold text-3xl sm:text-4xl text-center leading-tight">
           Get recommendations <br /> for anything
         </h1>
-        <h2 className="text-center text-xl font-medium">
+        <h2 className="text-center text-lg sm:text-xl font-medium">
           Find books, movies, music, TV series, games and more. <br />
           All in one platform. 🤩
         </h2>
         <div>
-          <Button className="px-12 h-16 rounded-xl">
-            <Rocket className="w-5 h-5 mr-2" />
-            Get started
-          </Button>
+          <Link href={"/app"}>
+            <Button className="px-12 h-16 rounded-xl">
+              <Rocket className="w-5 h-5 mr-2" />
+              Get started
+            </Button>
+          </Link>
         </div>
       </div>
-
-      <div className="relative min-h-40">
+      <div className="relative min-h-64 mb-24">
         <Image 
           src={"/hero-image.svg"} 
           alt="movie recommendations"
-          className="px-10"
           fill
         />
       </div>
