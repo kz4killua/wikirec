@@ -4,8 +4,7 @@ import { Select, SelectTrigger, SelectContent, SelectValue, SelectGroup, SelectI
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/shared/header"
 import { Footer } from "@/components/shared/footer"
-import React, { useRef } from "react"
-import { useEffect, useState } from "react"
+import React, { useCallback, useRef, useEffect, useState } from "react"
 import { Loader, Search, Trash2 } from "lucide-react"
 import { ScrollToTopButton } from "@/components/shared/scroll-to-top-button"
 import { searchTitles } from "@/services/search"
@@ -14,6 +13,7 @@ import { getRecommendations } from "@/services/recommendations"
 import { Recommendation } from "@/types"
 import Image from "next/image"
 import { Input } from "@/components/ui/input"
+import { SearchResults, type SearchResult } from "@/components/app/search-results"
 
 
 
@@ -22,13 +22,6 @@ interface UserPreference {
   placeholder: string;
   wikipediaKey: string | null;
   wikipediaTitle: string | null;
-}
-
-interface SearchResult {
-  id: number;
-  key: string;
-  title: string;
-  description: string;
 }
 
 
@@ -187,43 +180,6 @@ function UserChoices({
 }
 
 
-function SearchResults({
-  isFocused,
-  query,
-  searchResults,
-  setSearchResults,
-  handleSearchResultClick
-} : {
-  isFocused: boolean;
-  query: string;
-  searchResults: SearchResult[],
-  setSearchResults: React.Dispatch<React.SetStateAction<SearchResult[]>>,
-  handleSearchResultClick: (resultItem: SearchResult) => void
-}) {
-
-  return (
-    <ol className={`${(searchResults.length > 0) && isFocused ? 'absolute' : 'hidden'} focus:bg-red-500 top-full mt-2 border rounded-lg w-full z-50 divide-y`}>
-      {
-        searchResults.map(resultItem => 
-          <li 
-            key={resultItem.id}
-            className="w-full bg-white py-3 px-4 text-sm rounded-lg cursor-pointer hover:bg-blue-50"
-            onClick={() => handleSearchResultClick(resultItem)}
-          >
-            <h3 className="font-medium mb-1">
-              { resultItem.title }
-            </h3>
-            <p className="text-gray-600 text-xs">
-              { resultItem.description }
-            </p>
-          </li>
-        )
-      }
-    </ol>
-  )
-}
-
-
 function RecommendationsList({
   recommendationsRef,
   recommendations, 
@@ -310,8 +266,6 @@ function UserPreference({
 
   const [query, setQuery] = useState("")
   const [isFocused, setIsFocused] = useState(false)
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
-  
   const saved = preference.wikipediaKey !== null
 
   // Keep track of changes to each input query
@@ -321,6 +275,7 @@ function UserPreference({
 
   // When the user selects a search result, update the current 'preference'
   function handleSearchResultClick(resultItem: SearchResult) {
+    setQuery(resultItem.title)
     setUserPreferences(userPreferences.map(item => {
       if (item.id === preference.id) {
         return { ...item, wikipediaKey: resultItem.key, wikipediaTitle: resultItem.title  }
@@ -329,18 +284,6 @@ function UserPreference({
       }
     }))
   }
-
-  // Update search results whenever the query changes
-  useEffect(() => {
-    if ((query.length === 0) || saved) {
-      setSearchResults([])
-    } else {
-      searchTitles(query, 5)
-      .then(response => {
-        setSearchResults(response.data["pages"])
-      })
-    }
-  }, [query, saved])
 
   // Allow the user to delete a preference
   function removeUserPreference() {
@@ -372,10 +315,8 @@ function UserPreference({
           onBlur={() => setTimeout(() => setIsFocused(false), 500)}
         />
         <SearchResults 
-          isFocused={isFocused} 
+          active={isFocused || !saved} 
           query={query}
-          searchResults={searchResults}
-          setSearchResults={setSearchResults}
           handleSearchResultClick={handleSearchResultClick}
         />
       </div>
