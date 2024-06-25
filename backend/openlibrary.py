@@ -14,7 +14,7 @@ headers = {
 def search(q, limit, fields='*'):
     # https://openlibrary.org/dev/docs/api/search
     url = "https://openlibrary.org/search.json"
-    parameters = {'q': q, 'fields': fields, 'limit': 1}
+    parameters = {'q': q, 'fields': fields, 'limit': limit}
     response = requests.get(url, headers=headers, params=parameters)
     return response.json()
 
