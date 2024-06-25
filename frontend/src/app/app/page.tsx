@@ -1,28 +1,24 @@
 "use client"
 
 import { Select, SelectTrigger, SelectContent, SelectValue, SelectGroup, SelectItem } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/shared/header"
 import { Footer } from "@/components/shared/footer"
 import React, { useRef } from "react"
 import { useEffect, useState } from "react"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Check, Ellipsis, Loader, LoaderCircle, Pencil, Search, X } from "lucide-react"
+import { Loader, Search, Trash2 } from "lucide-react"
 import { ScrollToTopButton } from "@/components/shared/scroll-to-top-button"
 import { searchTitles } from "@/services/search"
 import { toast } from "sonner"
 import { getRecommendations } from "@/services/recommendations"
 import { Recommendation } from "@/types"
 import Image from "next/image"
-import Link from "next/link"
-import { DebouncedInput } from "@/components/shared/debounced-input"
+import { Input } from "@/components/ui/input"
 
 
 
 interface UserPreference {
   id: number;
-  query: string;
   placeholder: string;
   wikipediaKey: string | null;
   wikipediaTitle: string | null;
@@ -75,21 +71,18 @@ function UserChoices({
   const [userPreferences, setUserPreferences] = useState<UserPreference[]>([
     { 
       id: 1, 
-      query: "", 
       placeholder: "super awesome movie here...",
       wikipediaKey: null,
       wikipediaTitle: null,
     },
     { 
       id: 2, 
-      query: "", 
       placeholder: "or maybe your favorite book...",
       wikipediaKey: null,
       wikipediaTitle: null
     },
     { 
       id: 3, 
-      query: "", 
       placeholder: "or the song that's been on repeat...",
       wikipediaKey: null,
       wikipediaTitle: null
@@ -315,8 +308,7 @@ function UserPreference({
   setUserPreferences: React.Dispatch<React.SetStateAction<UserPreference[]>>
 }) {
 
-  type UserPreferenceStatus = 'inactive' | 'waiting' | 'loading' | 'found' | 'not-found'
-  const [status, setStatus] = useState<UserPreferenceStatus>('inactive')
+  const [query, setQuery] = useState("")
   const [isFocused, setIsFocused] = useState(false)
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   
@@ -324,20 +316,14 @@ function UserPreference({
 
   // Keep track of changes to each input query
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setUserPreferences(userPreferences.map(item => {
-      if (item.id === preference.id) {
-        return { ...item, query: event.target.value }
-      } else {
-        return item
-      }
-    }))
+    setQuery(event.target.value)
   }
 
   // When the user selects a search result, update the current 'preference'
   function handleSearchResultClick(resultItem: SearchResult) {
     setUserPreferences(userPreferences.map(item => {
       if (item.id === preference.id) {
-        return { ...item, query: resultItem.title, wikipediaKey: resultItem.key, wikipediaTitle: resultItem.title  }
+        return { ...item, wikipediaKey: resultItem.key, wikipediaTitle: resultItem.title  }
       } else {
         return item
       }
@@ -346,24 +332,26 @@ function UserPreference({
 
   // Update search results whenever the query changes
   useEffect(() => {
-    if ((preference.query.length === 0) || (saved)) {
+    if ((query.length === 0) || saved) {
       setSearchResults([])
     } else {
-      searchTitles(preference.query, 5)
+      searchTitles(query, 5)
       .then(response => {
         setSearchResults(response.data["pages"])
       })
     }
-  }, [preference.query, isFocused, saved])
+  }, [query, saved])
 
+  // Allow the user to delete a preference
   function removeUserPreference() {
     setUserPreferences(userPreferences.map(item => {
       if (item.id === preference.id) {
-        return { ...item, id: item.id, query: "", wikipediaKey: null, wikipediaTitle: null  }
+        return { ...item, wikipediaKey: null, wikipediaTitle: null  }
       } else {
         return item
       }
     }))
+    setQuery("")
   }
 
   return (
@@ -372,40 +360,20 @@ function UserPreference({
       <div 
         className="flex flex-col w-full relative group"
       >
-        <DebouncedInput
+        <Input
           type="text" 
           placeholder={preference.placeholder}
           className="ring-blue-700 disabled:opacity-100"
           onChange={handleInputChange}
-          value={preference.query}
+          value={query}
           disabled={saved}
           // Add a small delay to give other events time to trigger
           onFocus={() => setTimeout(() => setIsFocused(true), 500)}
           onBlur={() => setTimeout(() => setIsFocused(false), 500)}
         />
-        {
-          status === 'waiting' ? 
-          <p className="text-xs text-gray-500 flex items-center mt-1">
-            <Ellipsis size={12} className="mr-1" /> waiting for input
-          </p>
-          : status === 'loading' ?
-          <p className="text-xs text-gray-500 flex items-center mt-1">
-            <LoaderCircle size={12} className="mr-1" /> searching
-          </p>
-          : status === 'found' ?
-          <p className="text-xs text-emerald-700 flex items-center mt-1">
-            <Check size={12} className="mr-1" /> found
-          </p>
-          : status === 'not-found' ?
-          <p className="text-xs text-rose-700 flex items-center mt-1">
-            <X size={12} className="mr-1" /> not found
-          </p>
-          :
-          <p></p>
-        }
         <SearchResults 
           isFocused={isFocused} 
-          query={preference.query}
+          query={query}
           searchResults={searchResults}
           setSearchResults={setSearchResults}
           handleSearchResultClick={handleSearchResultClick}
@@ -425,7 +393,7 @@ function UserPreference({
           className="flex items-center justify-center"
           onClick={removeUserPreference}
         >
-          <Pencil size={15} />
+          <Trash2 size={15} />
         </Button>
       }
     </div>
