@@ -22,7 +22,7 @@ export function Footer() {
         </div>
       </div>
       <div className="text-center sm:text-left text-sm underline-offset-4">
-        Made by <Link href={"/"} className="font-medium underline underline-offset-4">Ifeanyi</Link>.
+        Made by <Link href={"https://github.com/kz4killua"} className="font-medium underline underline-offset-4">Ifeanyi</Link>.
         The source code is available on <Link href={"https://github.com/kz4killua/wikirec"} className="font-medium underline">Github</Link>.
       </div>
     </section>
