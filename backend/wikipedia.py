@@ -1,4 +1,5 @@
 import os
+import urllib.parse
 import requests
 from dotenv import load_dotenv
 
@@ -47,6 +48,7 @@ def get_page_source(title):
     """
     https://api.wikimedia.org/wiki/Core_REST_API/Reference/Pages/Get_page_source
     """
+    title = urllib.parse.quote(title, safe="")
     response = requests.get(
         f'https://api.wikimedia.org/core/v1/wikipedia/en/page/{title}',
         headers=headers,
