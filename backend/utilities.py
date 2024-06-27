@@ -140,7 +140,7 @@ def find_book_cover(title):
     """
 
     # Search for the book
-    matches = openlibrary.search(title, limit=1, fields='key,title,editions,editions.key')
+    matches = openlibrary.search(title, limit=5, fields='key,title,editions,editions.key')
 
     if matches['numFound'] == 0:
         return None
