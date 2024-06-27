@@ -1,6 +1,10 @@
+import re
 import csv
 import warnings
 import wikipedia
+import openlibrary
+import tmdb
+import rawg
 import mwparserfromhell
 from tqdm import tqdm
 from embeddings import create_embeddings
@@ -11,9 +15,7 @@ from vectorstore import upsert_vectors
 def upload_csv_items_to_vectorstore(csv_path, item_category):
 
     # Get each item from the given CSV file.
-    with open(csv_path, encoding='utf-8', newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        items = [row for row in reader]
+    items = load_items_from_csv(csv_path)
 
     # Get page details from Wikipedia
     pages = extract_wikipedia_pages(items, item_category)
@@ -50,36 +52,61 @@ def extract_wikipedia_pages(items, item_category):
     extracted_pages = []
 
     for item in tqdm(items, "Downloading pages"):
-        # Search Wikipedia for the item
+
+        # Add the item category to the search query
         if item_category == "books":
             search_query = f"{item['title']} book"
-        elif item_category == "films":
+        elif item_category == "movies":
             search_query = f"{item['title']} film"
         elif item_category == "games":
             search_query = f"{item['title']} game"
-        elif item_category == "songs":
+        elif item_category == "music":
             search_query = f"{item['title']} song"
         elif item_category == "tv-series":
-            search_query = f"{item['title']} tv series"
+            search_query = f"{item['title']} series"
         else:
             raise ValueError(f"Invalid item category: {item_category}")
         
-        results = wikipedia.search_content(search_query, 1)
-        if len(results['pages']) == 0:
-            warnings.warn(f"No results found for {item['title']}")
+        # Search Wikipedia for each item
+        results = wikipedia.search_content(search_query, 5)
+        results = results['pages']
+
+        if len(results) == 0:
+            warnings.warn(f"No search results found for {item['title']}")
             continue
-        else:
-            page_object = results['pages'][0]
+
+        # Find the item with a matching title
+        page_object = None
+        for page in results:
+            if compare_strings(
+                clean_wikipedia_title(page['title']), item['title']
+            ):
+                page_object = page
+                break
+
+        if page_object is None:
+            warnings.warn(f"No search results found for {item['title']}")
+            continue
 
         # Get the page source on Wikipedia
         page_object_with_source = wikipedia.get_page_source(page_object['key'])
         source = parse_page_source(page_object_with_source)
 
-        # Save the page
-        if page_object['thumbnail']:
-            thumbnail = page_object['thumbnail']['url']
+        # Extract the cover image for the item
+        thumbnail = ""
+
+        if item_category == "books":
+            thumbnail = find_book_cover(item['title']) or ""
+        elif item_category == "movies":
+            thumbnail = find_movie_poster(item['title']) or ""
+        elif item_category == "tv-series":
+            thumbnail = find_tv_series_poster(item['title']) or ""
+        elif item_category == "games":
+            thumbnail = find_game_cover(item['title']) or ""
+        elif item_category == "music":
+            raise NotImplementedError
         else:
-            thumbnail = ""
+            raise ValueError(f"Invalid item category: {item_category}")
 
         extracted_pages.append({
             'wikipedia_id': str(page_object['id']),
@@ -107,12 +134,114 @@ def parse_page_source(page_object):
     return source
 
 
+def find_book_cover(title):
+    """
+    Find the cover for a book with a given title using Open Library.
+    """
+
+    # Search for the book
+    matches = openlibrary.search(title, limit=1, fields='key,title,editions,editions.key')
+
+    if matches['numFound'] == 0:
+        return None
+    
+    for item in matches['docs'][:5]:
+        if compare_strings(title, item['title']):
+
+            try:
+                key = matches['docs'][0]['editions']['docs'][0]['key']
+            except IndexError:
+                continue
+
+            olid = key.split("/")[-1]
+            return openlibrary.covers(olid)
+        
+    return None
+
+
+def find_movie_poster(title):
+    """
+    Find the poster for a given movie title using TMDB.
+    """
+
+    results = tmdb.search_movie(title)
+
+    if results['total_results'] == 0:
+        return None
+        
+    for item in results['results'][:5]:
+        if compare_strings(title, item['title']):
+            return tmdb.get_image_url(results['results'][0]['poster_path'])
+        
+    return None
+
+
+def find_tv_series_poster(title):
+    """
+    Find the poster for a given TV series title using TMDB.
+    """
+
+    results = tmdb.search_tv(title)
+
+    if results['total_results'] == 0:
+        return None
+    
+    for item in results['results'][:5]:
+        if compare_strings(title, item['name']):
+            return tmdb.get_image_url(results['results'][0]['poster_path'])
+
+    return None
+
+
+def find_game_cover(title):
+    """
+    Find the poster for a given TV series title using RAWG.
+    """
+
+    results = rawg.search_games(title)
+
+    if results['count'] == 0:
+        return None
+    
+    for item in results['results'][:5]:
+        if compare_strings(title, item['name']):
+            return item['background_image']
+    
+    return None
+
+
 def save_items_to_csv(path, items):
-    """
-    Saves each dictionary item in a list as a row in a CSV.
-    """
     with open(path, 'w', encoding='utf-8', newline='') as csvfile:
         fieldnames = list(items[0].keys())
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(items)
+
+
+def load_items_from_csv(path):
+    with open(path, encoding='utf-8', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        items = [row for row in reader]
+    return items
+
+
+def clean_wikipedia_title(title):
+    """
+    Cleans a Wikipedia title by removing parenthesized metadata. 
+
+    E.g. Suits (American TV Series) -> Suits
+    """
+    pattern = r'\s*\([^)]*\)$'
+    return re.sub(pattern, '', title.strip())
+
+
+def compare_strings(s1, s2):
+
+    s1 = s1.lower()
+    s2 = s2.lower()
+
+    # Remove all special characters, and spaces
+    s1 = ''.join(c for c in s1 if c.isalnum())
+    s2 = ''.join(c for c in s2 if c.isalnum())
+
+    return s1 == s2
