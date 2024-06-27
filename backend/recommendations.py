@@ -22,7 +22,7 @@ def get_recommendations(page_keys, item_category):
     average_embedding = list(np.mean(embeddings, axis=0))
 
     # Query the vectorstore.
-    results = query_vectors(average_embedding, item_category, 10)
+    results = query_vectors(average_embedding, item_category, 20)
     matches = results['matches']
     response = [match['metadata'] for match in matches]
 
