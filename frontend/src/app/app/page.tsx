@@ -168,10 +168,10 @@ function UserChoices({
           </SelectTrigger>
           <SelectContent position="popper">
             <SelectGroup>
-              <SelectItem value="films">movies</SelectItem>
+              <SelectItem value="movies">movies</SelectItem>
               <SelectItem value="tv-series">tv series</SelectItem>
               <SelectItem value="books">books</SelectItem>
-              <SelectItem value="songs">songs</SelectItem>
+              <SelectItem value="music">songs</SelectItem>
               <SelectItem value="games">games</SelectItem>
             </SelectGroup>
           </SelectContent>
