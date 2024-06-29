@@ -3,6 +3,7 @@ import csv
 import warnings
 import wikipedia
 import openlibrary
+import musicbrainz
 import tmdb
 import rawg
 import mwparserfromhell
@@ -61,7 +62,7 @@ def extract_wikipedia_pages(items, item_category):
         elif item_category == "games":
             search_query = f"{item['title']} game"
         elif item_category == "music":
-            search_query = f"{item['title']} song"
+            search_query = f"{item['title']} {item['artist']} song"
         elif item_category == "tv-series":
             search_query = f"{item['title']} series"
         else:
@@ -78,9 +79,10 @@ def extract_wikipedia_pages(items, item_category):
         # Find the item with a matching title
         page_object = None
         for page in results:
-            if compare_strings(
-                clean_wikipedia_title(page['title']), item['title']
-            ):
+            if compare_strings(page['title'], item['title']):
+                page_object = page
+                break
+            elif compare_strings(clean_wikipedia_title(page['title']), item['title']):
                 page_object = page
                 break
 
@@ -104,7 +106,7 @@ def extract_wikipedia_pages(items, item_category):
         elif item_category == "games":
             thumbnail = find_game_cover(item['title']) or ""
         elif item_category == "music":
-            raise NotImplementedError
+            thumbnail = find_song_cover(item['title'], item['artist']) or ""
         else:
             raise ValueError(f"Invalid item category: {item_category}")
 
@@ -207,6 +209,26 @@ def find_game_cover(title):
         if compare_strings(title, item['name']):
             return item['background_image']
     
+    return None
+
+
+def find_song_cover(title, artist):
+    """
+    Find the cover for a song with a given title using MusicBrainz.
+    """
+
+    results = musicbrainz.search("release", title, artist, 5, 0)
+    
+    if results['count'] == 0:
+        return None
+        
+    for item in results['releases'][:5]:
+        if compare_strings(title, item['title']):
+            cover_art =  musicbrainz.get_cover_art(item['id'])
+            if cover_art is None:
+                continue
+            return cover_art['images'][0]['thumbnails']['large']
+            
     return None
 
 
