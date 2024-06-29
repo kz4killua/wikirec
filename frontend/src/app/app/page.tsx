@@ -331,8 +331,8 @@ function UserPreference({
           value={query}
           disabled={saved}
           // Add a small delay to give other events time to trigger
-          onFocus={() => setTimeout(() => setIsFocused(true), 200)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+          onFocus={() => setTimeout(() => setIsFocused(true), 500)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 500)}
         />
 
         {
