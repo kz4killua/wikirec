@@ -159,6 +159,10 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# AWS Lambda
+package/
+deployment_package.zip
+
 # Ignore article data
 data/raw
 data/test
