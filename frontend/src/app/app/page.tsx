@@ -32,25 +32,20 @@ export default function App() {
 
   const [recommendations, setRecommendations] = useState<Recommendation[]>([])
   const [recommendationType, setRecommendationType] = useState<RecommendationType>()
-  const recommendationsRef = useRef<HTMLElement>(null)
 
   return (
     <div className="overflow-y-auto">
       <Header />
       <main className="pt-40">
-        <UserChoices 
-          recommendationsRef={recommendationsRef}
+        <UserChoices
           recommendations={recommendations}
           setRecommendations={setRecommendations}
           recommendationType={recommendationType}
           setRecommendationType={setRecommendationType}
         />
         <RecommendationsList
-          recommendationsRef={recommendationsRef}
           recommendations={recommendations}
-          setRecommendations={setRecommendations}
           recommendationType={recommendationType}
-          setRecommendationType={setRecommendationType}
         />
       </main>
       <Footer />
@@ -64,13 +59,11 @@ export default function App() {
 function UserChoices({
   recommendations, 
   setRecommendations, 
-  recommendationsRef, 
   recommendationType, 
   setRecommendationType
 }: {
   recommendations: Recommendation[],
   setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>,
-  recommendationsRef: React.RefObject<HTMLElement>,
   recommendationType: RecommendationType,
   setRecommendationType: React.Dispatch<React.SetStateAction<RecommendationType>>
 }) {
@@ -125,14 +118,7 @@ function UserChoices({
       wikipediaKeys as string[], recommendationType
     )
     .then(recommendations => setRecommendations(recommendations))
-    .then(() => {
-      // Scroll the user to the recommendations section
-      recommendationsRef.current?.scrollIntoView({
-        behavior: "smooth"
-      })
-    })
     .finally(() => setLoading(false))
-    
   }
 
   return (
@@ -194,23 +180,25 @@ function UserChoices({
 
 
 function RecommendationsList({
-  recommendationsRef,
   recommendations, 
-  setRecommendations,
   recommendationType,
-  setRecommendationType
 } : {
-  recommendationsRef: React.RefObject<HTMLElement>,
   recommendations: Recommendation[],
-  setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>,
   recommendationType: RecommendationType,
-  setRecommendationType: React.Dispatch<React.SetStateAction<RecommendationType>>
 }) {
+
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [recommendations])
 
   return (
     <section 
       className={`${recommendations.length === 0 ? 'hidden' : ''} py-24 bg-blue-50 scroll-mt-20`}
-      ref={recommendationsRef}
+      ref={ref}
     >
       <div>
         <h1 className="font-extrabold text-5xl mb-14 px-20">
