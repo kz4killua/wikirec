@@ -14,6 +14,7 @@ import { Recommendation } from "@/types"
 import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { SearchResults, type SearchResult } from "@/components/app/search-results"
+import clsx from "clsx"
 
 
 
@@ -205,10 +206,22 @@ function RecommendationsList({
           We found some <span className="text-blue-700">{recommendationType}</span> you&apos;ll <span className="text-blue-700">love</span>
         </h1>
 
-        <div className="grid grid-cols-4 gap-10 px-20">
+        <div 
+          className={clsx(
+            "grid gap-10 px-20",
+            `${
+              recommendationType === "games" ? 'grid-cols-3' : 'grid-cols-4'
+            }`
+          )}
+        >
           {
             recommendations.map(
-              item => <RecommendationItem key={item.wikipedia_id} item={item} />
+              item => 
+              <RecommendationItem 
+                key={item.wikipedia_id} 
+                item={item} 
+                recommendationType={recommendationType}
+                />
             )
           }
         </div>
@@ -220,9 +233,11 @@ function RecommendationsList({
 
 
 function RecommendationItem({
-  item
+  item,
+  recommendationType
 }: {
-  item: Recommendation
+  item: Recommendation,
+  recommendationType: RecommendationType
 }) {
 
 
@@ -238,16 +253,24 @@ function RecommendationItem({
   return (
     <div className="flex flex-col gap-y-2">
       <div 
-        className="w-full relative h-80 bg-gray-700 rounded-xl border-4 border-gray-400 hover:border-blue-700 transition-colors duration-500 cursor-pointer flex items-center justify-center overflow-hidden"
+        className={clsx(
+          "w-full relative bg-gray-700 rounded-xl border-4 border-gray-400 hover:border-blue-700",
+          "transition-colors duration-500 cursor-pointer flex items-center justify-center overflow-hidden",
+          `${
+            recommendationType === "music" ? 'aspect-square' : 
+            recommendationType === "games" ? 'aspect-video' :
+            'h-80'
+          }`
+        )}
         onClick={handleClick}
       >
         {
           item.thumbnail &&
           <Image 
-          src={item.thumbnail}
-          alt={item.title}
-          fill
-          className=""
+            src={item.thumbnail}
+            alt={item.title}
+            fill
+            className="object-cover object-center"
           />
         }
       </div>
