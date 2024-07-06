@@ -5,3 +5,5 @@ export interface Recommendation {
   title: string;
   thumbnail: string;
 }
+
+export type RecommendationType = string | undefined; 
