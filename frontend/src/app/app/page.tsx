@@ -47,8 +47,8 @@ export default function App() {
           setPreviousRecommendationType={setPreviousRecommendationType}
         />
         <RecommendationsList
-          previousRecommendations={previousRecommendations}
-          previousRecommendationType={previousRecommendationType}
+          recommendations={previousRecommendations}
+          recommendationType={previousRecommendationType}
         />
       </main>
       <Footer />

@@ -8,11 +8,11 @@ import { type RecommendationType } from "@/types"
 
 
 export function RecommendationsList({
-  previousRecommendations, 
-  previousRecommendationType,
+  recommendations, 
+  recommendationType,
 } : {
-  previousRecommendations: Recommendation[],
-  previousRecommendationType: RecommendationType,
+  recommendations: Recommendation[],
+  recommendationType: RecommendationType,
 }) {
 
   const ref = useRef<HTMLDivElement>(null)
@@ -21,33 +21,33 @@ export function RecommendationsList({
     if (ref.current) {
       ref.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [previousRecommendations])
+  }, [recommendations])
 
   return (
     <section 
-      className={`${previousRecommendations.length === 0 ? 'hidden' : ''} py-24 px-5 sm:px-20 bg-blue-50 scroll-mt-20`}
+      className={`${recommendations.length === 0 ? 'hidden' : ''} py-24 px-5 sm:px-20 bg-blue-50 scroll-mt-20`}
       ref={ref}
     >
       <div>
         <h1 className="font-extrabold text-3xl sm:text-5xl text-center sm:text-left mb-14">
-          We found some <span className="text-blue-700">{previousRecommendationType}</span> you&apos;ll <span className="text-blue-700">love</span>
+          We found some <span className="text-blue-700">{recommendationType}</span> you&apos;ll <span className="text-blue-700">love</span>
         </h1>
 
         <div 
           className={clsx(
             "grid gap-7 sm:gap-10",
             `${
-              previousRecommendationType === "games" ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-4'
+              recommendationType === "games" ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-4'
             }`
           )}
         >
           {
-            previousRecommendations.map(
+            recommendations.map(
               item => 
               <RecommendationItem 
                 key={item.wikipedia_id} 
                 item={item} 
-                recommendationType={previousRecommendationType}
+                recommendationType={recommendationType}
                 />
             )
           }
