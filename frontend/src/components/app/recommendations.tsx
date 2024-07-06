@@ -25,19 +25,19 @@ export function RecommendationsList({
 
   return (
     <section 
-      className={`${previousRecommendations.length === 0 ? 'hidden' : ''} py-24 bg-blue-50 scroll-mt-20`}
+      className={`${previousRecommendations.length === 0 ? 'hidden' : ''} py-24 px-5 sm:px-20 bg-blue-50 scroll-mt-20`}
       ref={ref}
     >
       <div>
-        <h1 className="font-extrabold text-5xl mb-14 px-20">
+        <h1 className="font-extrabold text-3xl sm:text-5xl text-center sm:text-left mb-14">
           We found some <span className="text-blue-700">{previousRecommendationType}</span> you&apos;ll <span className="text-blue-700">love</span>
         </h1>
 
         <div 
           className={clsx(
-            "grid gap-10 px-20",
+            "grid gap-7 sm:gap-10",
             `${
-              previousRecommendationType === "games" ? 'grid-cols-3' : 'grid-cols-4'
+              previousRecommendationType === "games" ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-4'
             }`
           )}
         >
@@ -86,7 +86,7 @@ export function RecommendationItem({
           `${
             recommendationType === "music" ? 'aspect-square' : 
             recommendationType === "games" ? 'aspect-video' :
-            'h-80'
+            'h-60 sm:h-80'
           }`
         )}
         onClick={handleClick}

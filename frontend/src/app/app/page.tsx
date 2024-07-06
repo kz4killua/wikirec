@@ -100,20 +100,18 @@ function UserChoices({
 
   async function handleGetRecommendations() {
 
-    // Get the wikipediaKeys of all selected items
+    // Get all the wikipedia keys from the user preferences
     const wikipediaKeys = userPreferences
     .filter(item => 
       item.wikipediaKey !== null && item.wikipediaKey !== undefined
     )
     .map(item => item.wikipediaKey)
 
-    // Users must have at least one preference
+    // Validate inputs
     if (wikipediaKeys.length === 0) {
       toast.error("You must enter at least one movie, book, tv series, song, or game before proceeding.")
       return
     }
-
-    // Users must pick a recommendation type before submitting
     if (!recommendationType) {
       toast.error("Please choose a recommendation type before proceeding.")
       return
@@ -133,9 +131,9 @@ function UserChoices({
   }
 
   return (
-    <section className="max-w-2xl mx-auto pb-24">
+    <section className="max-w-2xl mx-auto pb-24 px-10">
 
-      <h1 className="font-extrabold text-center text-5xl mb-14">
+      <h1 className="font-extrabold text-center text-3xl sm:text-5xl mb-14">
         Find your new <span className="text-blue-700">favourites</span>
       </h1>
 
