@@ -33,6 +33,8 @@ export default function App() {
 
   const [recommendations, setRecommendations] = useState<Recommendation[]>([])
   const [recommendationType, setRecommendationType] = useState<RecommendationType>()
+  const [previousRecommendations, setPreviousRecommendations] = useState<Recommendation[]>([])
+  const [previousRecommendationType, setPreviousRecommendationType] = useState<RecommendationType>()
 
   return (
     <div className="overflow-y-auto">
@@ -43,10 +45,12 @@ export default function App() {
           setRecommendations={setRecommendations}
           recommendationType={recommendationType}
           setRecommendationType={setRecommendationType}
+          setPreviousRecommendations={setPreviousRecommendations}
+          setPreviousRecommendationType={setPreviousRecommendationType}
         />
         <RecommendationsList
-          recommendations={recommendations}
-          recommendationType={recommendationType}
+          previousRecommendations={previousRecommendations}
+          previousRecommendationType={previousRecommendationType}
         />
       </main>
       <Footer />
@@ -61,12 +65,16 @@ function UserChoices({
   recommendations, 
   setRecommendations, 
   recommendationType, 
-  setRecommendationType
+  setRecommendationType,
+  setPreviousRecommendations,
+  setPreviousRecommendationType,
 }: {
   recommendations: Recommendation[],
   setRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>,
   recommendationType: RecommendationType,
-  setRecommendationType: React.Dispatch<React.SetStateAction<RecommendationType>>
+  setRecommendationType: React.Dispatch<React.SetStateAction<RecommendationType>>,
+  setPreviousRecommendations: React.Dispatch<React.SetStateAction<Recommendation[]>>,
+  setPreviousRecommendationType: React.Dispatch<React.SetStateAction<RecommendationType>>,
 }) {
 
   const [userPreferences, setUserPreferences] = useState<UserPreference[]>([
@@ -118,7 +126,11 @@ function UserChoices({
     getRecommendations(
       wikipediaKeys as string[], recommendationType
     )
-    .then(recommendations => setRecommendations(recommendations))
+    .then(recommendations => {
+      setRecommendations(recommendations)
+      setPreviousRecommendations(recommendations)
+      setPreviousRecommendationType(recommendationType)
+    })
     .finally(() => setLoading(false))
   }
 
@@ -181,11 +193,11 @@ function UserChoices({
 
 
 function RecommendationsList({
-  recommendations, 
-  recommendationType,
+  previousRecommendations, 
+  previousRecommendationType,
 } : {
-  recommendations: Recommendation[],
-  recommendationType: RecommendationType,
+  previousRecommendations: Recommendation[],
+  previousRecommendationType: RecommendationType,
 }) {
 
   const ref = useRef<HTMLDivElement>(null)
@@ -194,33 +206,33 @@ function RecommendationsList({
     if (ref.current) {
       ref.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [recommendations])
+  }, [previousRecommendations])
 
   return (
     <section 
-      className={`${recommendations.length === 0 ? 'hidden' : ''} py-24 bg-blue-50 scroll-mt-20`}
+      className={`${previousRecommendations.length === 0 ? 'hidden' : ''} py-24 bg-blue-50 scroll-mt-20`}
       ref={ref}
     >
       <div>
         <h1 className="font-extrabold text-5xl mb-14 px-20">
-          We found some <span className="text-blue-700">{recommendationType}</span> you&apos;ll <span className="text-blue-700">love</span>
+          We found some <span className="text-blue-700">{previousRecommendationType}</span> you&apos;ll <span className="text-blue-700">love</span>
         </h1>
 
         <div 
           className={clsx(
             "grid gap-10 px-20",
             `${
-              recommendationType === "games" ? 'grid-cols-3' : 'grid-cols-4'
+              previousRecommendationType === "games" ? 'grid-cols-3' : 'grid-cols-4'
             }`
           )}
         >
           {
-            recommendations.map(
+            previousRecommendations.map(
               item => 
               <RecommendationItem 
                 key={item.wikipedia_id} 
                 item={item} 
-                recommendationType={recommendationType}
+                recommendationType={previousRecommendationType}
                 />
             )
           }
