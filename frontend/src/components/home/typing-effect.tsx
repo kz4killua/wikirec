@@ -14,7 +14,7 @@ export function TypingEffect({
   const [isDeleting, setIsDeleting] = useState(false);
   const delay = 100;
   const deleteDelay = 50;
-  const pauseDelay = 3000;
+  const pauseDelay = 2000;
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
