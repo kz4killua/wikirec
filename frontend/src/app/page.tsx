@@ -11,6 +11,7 @@ import { TypingEffect } from "@/components/home/typing-effect";
 import { Check, Rocket, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import Marquee from "@/components/magicui/marquee";
 
 
 export default function Home() {
@@ -87,7 +88,7 @@ function Features() {
   ]
 
   return (
-    <section className="py-28 px-10">
+    <section className="py-24 px-10">
 
       <h2 className="text-center font-extrabold text-3xl sm:text-5xl tracking-tight mb-12 md:mb-20">
         Tired of searching for new <TypingEffect className="text-blue-700" texts={[
@@ -140,21 +141,24 @@ function Features() {
         </div>
       </div>
 
-      <div className="text-center mt-10 sm:mt-20">
+      <Marquee pauseOnHover className="[--duration:30s] mt-10 sm:mt-20">
+        {
+          carouselImages.map(item => 
+            <div className="p-5 sm:px-10 flex items-center justify-center" key={item.src}>
+              <Image 
+                src={item.src}
+                alt={item.alt}
+                height={100}
+                width={100}
+                className="cursor-pointer grayscale opacity-50 hover:opacity-100 transition-opacity duration-300 ease-in-out"
+              />
+            </div>
+          )
+        }
+      </Marquee>
+
+      <div className="text-center">
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-x-10 mt-10 sm:px-10">
-          {
-            carouselImages.map(item => 
-              <div className="p-5 flex items-center justify-center" key={item.src}>
-                <Image 
-                  src={item.src}
-                  alt={item.alt}
-                  height={500}
-                  width={500}
-                  className="grayscale opacity-50"
-                />
-              </div>
-            )
-          }
         </div>
       </div>
 
