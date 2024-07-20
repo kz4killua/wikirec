@@ -1,9 +1,7 @@
-import { Icon } from "@/components/shared/icon";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select"
+import Container from "@/components/shared/container";
 
 import { Laurel } from "@/components/home/laurel";
 import { TypingEffect } from "@/components/home/typing-effect";
@@ -22,8 +20,8 @@ export default function Home() {
         <Hero />
         <Features />
         <GetStarted />
-        <Footer />
       </main>
+      <Footer />
     </div>
   );
 }
@@ -31,32 +29,34 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="flex flex-col sm:grid sm:grid-cols-2 bg-blue-500/10 pt-40 px-10">
-      <div className="flex flex-col gap-y-8 pb-24 items-center justify-center sm:min-h-dvh text-black">
-        <HackathonWin />
-        <h1 className="font-extrabold text-3xl sm:text-4xl text-center leading-tight">
-          Get recommendations <br /> for anything
-        </h1>
-        <h2 className="text-center text-lg sm:text-xl font-medium">
-          Find books, movies, music, TV series, games and more. <br />
-          All in one platform. 🤩
-        </h2>
-        <div>
-          <Link href={"/app"}>
-            <Button className="px-12 h-16 rounded-xl">
-              <Rocket className="w-5 h-5 mr-2" />
-              Get started
-            </Button>
-          </Link>
+    <section className="bg-blue-500/10 pt-40">
+      <Container className="flex flex-col sm:grid sm:grid-cols-2">
+        <div className="flex flex-col gap-y-8 pb-24 items-center justify-center sm:min-h-dvh text-black">
+          <HackathonWin />
+          <h1 className="font-extrabold text-3xl sm:text-4xl text-center leading-tight">
+            Get recommendations <br /> for anything
+          </h1>
+          <h2 className="text-center text-lg sm:text-xl font-medium">
+            Find books, movies, music, TV series, games and more. <br />
+            All in one platform. 🤩
+          </h2>
+          <div>
+            <Link href={"/app"}>
+              <Button className="px-12 h-16 rounded-xl">
+                <Rocket className="w-5 h-5 mr-2" />
+                Get started
+              </Button>
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className="relative min-h-64 mb-24">
-        <Image 
-          src={"/hero-image.svg"} 
-          alt="movie recommendations"
-          fill
-        />
-      </div>
+        <div className="relative min-h-64 mb-24">
+          <Image 
+            src={"/hero-image.svg"} 
+            alt="movie recommendations"
+            fill
+          />
+        </div>
+      </Container>
     </section>
   )
 }
@@ -88,80 +88,80 @@ function Features() {
   ]
 
   return (
-    <section className="py-24 px-10">
+    <section className="py-24">
+      <Container>
+        <h2 className="text-center font-extrabold text-3xl sm:text-5xl tracking-tight mb-12 md:mb-20">
+          Tired of searching for new <TypingEffect className="text-blue-700" texts={[
+            "books", "movies", "series", "music", "games", "stuff"
+          ]} />?
+        </h2>
 
-      <h2 className="text-center font-extrabold text-3xl sm:text-5xl tracking-tight mb-12 md:mb-20">
-        Tired of searching for new <TypingEffect className="text-blue-700" texts={[
-          "books", "movies", "series", "music", "games", "stuff"
-        ]} />?
-      </h2>
-
-      <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-8 md:gap-12">
-        <div className="bg-rose-100/75 text-rose-700 p-8 md:p-12 rounded-lg w-full max-w-md ">
-          <h3 className="font-bold text-lg mb-4">Without Wiki Rec 😟</h3>
-          <ul className="list-disc list-inside space-y-1.5 ">
-            <li className="flex gap-2 items-center">
-              <X className="shrink-0" size={12} />
-              Use separate sites to find books, movies, games etc.
-            </li>
-            <li className="flex gap-2 items-center">
-              <X className="shrink-0" size={12} />
-              No cross category recommendations.
-            </li>
-            <li className="flex gap-2 items-center">
-              <X className="shrink-0" size={12} />
-              Manage 12+ different accounts.
-            </li>
-            <li className="flex gap-2 items-center">
-              <X className="shrink-0" size={12} />
-              Sign up required.
-            </li>
-          </ul>
+        <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-8 md:gap-12">
+          <div className="bg-rose-100/75 text-rose-700 p-8 md:p-12 rounded-lg w-full max-w-md ">
+            <h3 className="font-bold text-lg mb-4">Without Wiki Rec 😟</h3>
+            <ul className="list-disc list-inside space-y-1.5 ">
+              <li className="flex gap-2 items-center">
+                <X className="shrink-0" size={12} />
+                Use separate sites to find books, movies, games etc.
+              </li>
+              <li className="flex gap-2 items-center">
+                <X className="shrink-0" size={12} />
+                No cross category recommendations.
+              </li>
+              <li className="flex gap-2 items-center">
+                <X className="shrink-0" size={12} />
+                Manage 12+ different accounts.
+              </li>
+              <li className="flex gap-2 items-center">
+                <X className="shrink-0" size={12} />
+                Sign up required.
+              </li>
+            </ul>
+          </div>
+          <div className="bg-blue-100/70 text-blue-700 p-8 md:p-12 rounded-lg w-full max-w-md">
+            <h3 className="font-bold text-lg mb-4">With Wiki Rec 😎</h3>
+            <ul className="list-disc list-inside space-y-1.5 ">
+              <li className="flex gap-2 items-center">
+                <Check className="shrink-0" size={12} />
+                Find books, movies, tv series, games, and music, all in one platform!
+              </li>
+              <li className="flex gap-2 items-center">
+                <Check className="shrink-0" size={12} />
+                Get recommendations across categories e.g. find books similar to your favorite movies.
+              </li>
+              <li className="flex gap-2 items-center">
+                <Check className="shrink-0" size={12} />
+                Only one account for all your entertainment needs.
+              </li>
+              <li className="flex gap-2 items-center">
+                <Check className="shrink-0" size={12} />
+                No sign-up or credit cards required!
+              </li>
+            </ul>
+          </div>
         </div>
-        <div className="bg-blue-100/70 text-blue-700 p-8 md:p-12 rounded-lg w-full max-w-md">
-          <h3 className="font-bold text-lg mb-4">With Wiki Rec 😎</h3>
-          <ul className="list-disc list-inside space-y-1.5 ">
-            <li className="flex gap-2 items-center">
-              <Check className="shrink-0" size={12} />
-              Find books, movies, tv series, games, and music, all in one platform!
-            </li>
-            <li className="flex gap-2 items-center">
-              <Check className="shrink-0" size={12} />
-              Get recommendations across categories e.g. find books similar to your favorite movies.
-            </li>
-            <li className="flex gap-2 items-center">
-              <Check className="shrink-0" size={12} />
-              Only one account for all your entertainment needs.
-            </li>
-            <li className="flex gap-2 items-center">
-              <Check className="shrink-0" size={12} />
-              No sign-up or credit cards required!
-            </li>
-          </ul>
+
+        <Marquee pauseOnHover className="[--duration:30s] mt-10 sm:mt-20">
+          {
+            carouselImages.map(item => 
+              <div className="p-5 sm:px-10 flex items-center justify-center" key={item.src}>
+                <Image 
+                  src={item.src}
+                  alt={item.alt}
+                  height={100}
+                  width={100}
+                  className="cursor-pointer grayscale opacity-50 hover:opacity-100 transition-opacity duration-300 ease-in-out"
+                />
+              </div>
+            )
+          }
+        </Marquee>
+
+        <div className="text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-x-10 mt-10 sm:px-10">
+          </div>
         </div>
-      </div>
-
-      <Marquee pauseOnHover className="[--duration:30s] mt-10 sm:mt-20">
-        {
-          carouselImages.map(item => 
-            <div className="p-5 sm:px-10 flex items-center justify-center" key={item.src}>
-              <Image 
-                src={item.src}
-                alt={item.alt}
-                height={100}
-                width={100}
-                className="cursor-pointer grayscale opacity-50 hover:opacity-100 transition-opacity duration-300 ease-in-out"
-              />
-            </div>
-          )
-        }
-      </Marquee>
-
-      <div className="text-center">
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-x-10 mt-10 sm:px-10">
-        </div>
-      </div>
-
+      </Container>
     </section>
   )
 }
@@ -193,29 +193,31 @@ function HackathonWin() {
 
 function GetStarted() {
   return (
-    <section className="py-28 bg-blue-50 px-10">
-      <h2 className="text-center font-extrabold text-3xl sm:text-5xl tracking-tight mb-6">
-        So...let&apos;s <span className="text-blue-700">get started</span>.
-      </h2>
-      <h3 className="text-gray-600 text-xl text-center">
-        No sign-up or credit cards required! 😊
-      </h3>
-      <div className="flex items-center justify-center my-5">
-        <Image
-          alt="person reading"
-          src={"/reading.svg"}
-          height={400}
-          width={400}
-        />
-      </div>
-      <div className="text-center mt-10">
-        <Link href={"/app"}>
-          <Button className="px-12 h-16 rounded-xl">
-            <Rocket className="w-5 h-5 mr-2" />
-            Get started
-          </Button>
-        </Link>
-      </div>
+    <section className="py-28 bg-blue-50">
+      <Container>
+        <h2 className="text-center font-extrabold text-3xl sm:text-5xl tracking-tight mb-6">
+          So...let&apos;s <span className="text-blue-700">get started</span>.
+        </h2>
+        <h3 className="text-gray-600 text-xl text-center">
+          No sign-up or credit cards required! 😊
+        </h3>
+        <div className="flex items-center justify-center my-5">
+          <Image
+            alt="person reading"
+            src={"/reading.svg"}
+            height={400}
+            width={400}
+          />
+        </div>
+        <div className="text-center mt-10">
+          <Link href={"/app"}>
+            <Button className="px-12 h-16 rounded-xl">
+              <Rocket className="w-5 h-5 mr-2" />
+              Get started
+            </Button>
+          </Link>
+        </div>
+      </Container>
     </section>
   )
 }
