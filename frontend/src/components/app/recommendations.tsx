@@ -5,6 +5,7 @@ import Image from "next/image"
 import React, { useCallback, useRef, useEffect, useState } from "react"
 import { type Recommendation } from "@/types"
 import { type RecommendationType } from "@/types"
+import Container from "../shared/container"
 
 
 export function RecommendationsList({
@@ -25,10 +26,10 @@ export function RecommendationsList({
 
   return (
     <section 
-      className={`${recommendations.length === 0 ? 'hidden' : ''} py-24 px-5 sm:px-20 bg-blue-50 scroll-mt-20`}
+      className={`${recommendations.length === 0 ? 'hidden' : ''} py-24 bg-blue-50 scroll-mt-20`}
       ref={ref}
     >
-      <div>
+      <Container>
         <h1 className="font-extrabold text-3xl sm:text-5xl text-center sm:text-left mb-14">
           We found some <span className="text-blue-700">{recommendationType}</span> you&apos;ll <span className="text-blue-700">love</span>
         </h1>
@@ -53,7 +54,7 @@ export function RecommendationsList({
           }
         </div>
 
-      </div>
+      </Container>
     </section>
   )
 }
