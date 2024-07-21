@@ -38,7 +38,7 @@ function Hero() {
           </h1>
           <h2 className="text-center text-lg sm:text-xl font-medium">
             Find books, movies, music, TV series, games and more. <br />
-            All in one platform. 🤩
+            All in one place. 🤩
           </h2>
           <div>
             <Link href={"/app"}>
@@ -64,27 +64,27 @@ function Hero() {
 
 function Features() {
 
-  const carouselImages = [
+  const marqueeImages = [
     {
-      src: "/carousel-book.svg",
-      alt: "books"
+      src: "/marquee-book.jpg",
+      alt: "Books"
     },
     {
-      src: "/carousel-controller.svg",
-      alt: "games"
+      src: "/marquee-game.jpg",
+      alt: "Games"
     },
     {
-      src: "/carousel-film.svg",
-      alt: "films"
+      src: "/marquee-movie.jpg",
+      alt: "TV series"
     },
     {
-      src: "/carousel-tv.svg",
-      alt: "tv-series"
+      src: "/marquee-music.jpg",
+      alt: "Music"
     },
     {
-      src: "/carousel-headphones.svg",
-      alt: "music"
-    }
+      src: "/marquee-cinema.jpg",
+      alt: "Movies"
+    },
   ]
 
   return (
@@ -101,19 +101,19 @@ function Features() {
             <h3 className="font-bold text-lg mb-4">Without Wiki Rec 😟</h3>
             <ul className="list-disc list-inside space-y-1.5 ">
               <li className="flex gap-2 items-center">
-                <X className="shrink-0" size={12} />
+                <X className="shrink-0" size={14} />
                 Use separate sites to find books, movies, games etc.
               </li>
               <li className="flex gap-2 items-center">
-                <X className="shrink-0" size={12} />
+                <X className="shrink-0" size={14} />
                 No cross category recommendations.
               </li>
               <li className="flex gap-2 items-center">
-                <X className="shrink-0" size={12} />
-                Manage 12+ different accounts.
+                <X className="shrink-0" size={14} />
+                Manage 5+ different accounts.
               </li>
               <li className="flex gap-2 items-center">
-                <X className="shrink-0" size={12} />
+                <X className="shrink-0" size={14} />
                 Sign up required.
               </li>
             </ul>
@@ -131,7 +131,7 @@ function Features() {
               </li>
               <li className="flex gap-2 items-center">
                 <Check className="shrink-0" size={12} />
-                Only one account for all your entertainment needs.
+                All your entertainment needs in one place.
               </li>
               <li className="flex gap-2 items-center">
                 <Check className="shrink-0" size={12} />
@@ -141,21 +141,30 @@ function Features() {
           </div>
         </div>
 
-        <Marquee pauseOnHover className="[--duration:30s] mt-10 sm:mt-20">
-          {
-            carouselImages.map(item => 
-              <div className="p-5 sm:px-10 flex items-center justify-center" key={item.src}>
-                <Image 
-                  src={item.src}
-                  alt={item.alt}
-                  height={100}
-                  width={100}
-                  className="cursor-pointer grayscale opacity-50 hover:opacity-100 transition-opacity duration-300 ease-in-out"
-                />
-              </div>
-            )
-          }
-        </Marquee>
+        <div className="relative">
+          <Marquee className="[--duration:60s] mt-10 sm:mt-20">
+            {
+              marqueeImages.map(item => 
+                <div className="relative p-2 flex items-center justify-center" key={item.src}>
+                  <Image 
+                    src={item.src}
+                    alt={item.alt}
+                    height={300}
+                    width={300}
+                    className="rounded-lg aspect-[3/2] object-cover"
+                  />
+                  <div className="absolute bottom-2 left-0 right-0">
+                    <p className="text-white text-center font-medium text-sm pb-2">
+                      {item.alt}
+                    </p>
+                  </div>
+                </div>
+              )
+            }
+          </Marquee>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white dark:from-background"></div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white dark:from-background"></div>
+        </div>
 
         <div className="text-center">
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-x-10 mt-10 sm:px-10">

@@ -8,7 +8,7 @@ export function Footer() {
     <section className="bg-gray-300/50 border-t">
       <Container className="flex flex-col gap-y-6 py-12 px-12">
         <div className="flex flex-col sm:flex-row gap-2 items-center">
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Icon 
               width={30}
               height={30}
@@ -18,7 +18,7 @@ export function Footer() {
             </strong>
           </div>
           <div className="text-center sm:text-left">
-            <span className="text-sm italic">
+            <span className="text-sm">
               (Winner of the 2023 Code in my Bones hackathon!)
             </span>
           </div>
