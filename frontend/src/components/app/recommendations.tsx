@@ -95,6 +95,8 @@ export function RecommendationItem({
         {
           item.thumbnail &&
           <Image 
+            // *unoptimized*: This is a Vercel cost-saving strategy
+            unoptimized
             src={item.thumbnail}
             alt={item.title}
             fill
