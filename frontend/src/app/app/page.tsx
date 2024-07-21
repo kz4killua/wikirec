@@ -127,6 +127,9 @@ function UserChoices({
       setPreviousRecommendations(recommendations)
       setPreviousRecommendationType(recommendationType)
     })
+    .catch(error => {
+      toast.error("Oops! Something went wrong. Please try again.")
+    })
     .finally(() => setLoading(false))
   }
 
