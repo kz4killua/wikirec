@@ -164,7 +164,6 @@ package/
 deployment_package.zip
 
 # Ignore article data
-data/raw
 data/test
 data_old/
 recommendations/
