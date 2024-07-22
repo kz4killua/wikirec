@@ -13,3 +13,4 @@ zip -r ../deployment_package.zip .
 
 cd ..
 zip deployment_package.zip *.py
+zip deployment_package.zip tiktoken_cache

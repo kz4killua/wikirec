@@ -163,9 +163,7 @@ cython_debug/
 package/
 deployment_package.zip
 
-# Ignore article data
+# Cache files
 data/test
 data_old/
-recommendations/
-web/
-manage.py
+tiktoken_cache/

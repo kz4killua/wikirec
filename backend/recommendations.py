@@ -1,10 +1,7 @@
 import wikipedia
-import mwparserfromhell
-import numpy as np
 from utilities import parse_page_source
-from embeddings import create_embeddings
+from embeddings import create_embeddings, average_embeddings
 from vectorstore import query_vectors
-
 
 
 def get_recommendations(page_keys, item_category, count):
@@ -19,10 +16,10 @@ def get_recommendations(page_keys, item_category, count):
 
     # Create and average the embeddings for each of the pages.
     embeddings = create_embeddings(page_sources)
-    average_embedding = list(np.mean(embeddings, axis=0))
+    query = average_embeddings(embeddings)
 
     # Query the vectorstore.
-    results = query_vectors(average_embedding, item_category, count)
+    results = query_vectors(query, item_category, count)
     matches = results['matches']
     response = [match['metadata'] for match in matches]
 
