@@ -24,8 +24,8 @@ export function Footer() {
           </div>
         </div>
         <div className="text-center sm:text-left text-sm underline-offset-4">
-          Made with ❤️ by <Link href={"https://www.ifeanyiobinelo.com/"} className="font-medium underline underline-offset-4">Ifeanyi</Link>.
-          The source code is available on <Link href={"https://github.com/kz4killua/wikirec"} className="font-medium underline">Github</Link>.
+          Made with ❤️ by <Link href={"https://www.ifeanyiobinelo.com/"} target="_blank" className="font-medium underline underline-offset-4">Ifeanyi</Link>.
+          The source code is available on <Link href={"https://github.com/kz4killua/wikirec"} target="_blank" className="font-medium underline">Github</Link>.
         </div>
       </Container>
     </section>
