@@ -151,7 +151,7 @@ function Features() {
                     alt={item.alt}
                     height={300}
                     width={300}
-                    className="rounded-lg aspect-[3/2] w-[150px] sm:w-[300px] object-cover"
+                    className="rounded-lg aspect-[3/2] w-[200px] sm:w-[300px] object-cover"
                   />
                   <div className="absolute bottom-2 left-0 right-0">
                     <p className="text-white text-center font-medium text-sm pb-2">
