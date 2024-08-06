@@ -151,7 +151,7 @@ function Features() {
                     alt={item.alt}
                     height={300}
                     width={300}
-                    className="rounded-lg aspect-[3/2] object-cover"
+                    className="rounded-lg aspect-[3/2] w-[150px] sm:w-[300px] object-cover"
                   />
                   <div className="absolute bottom-2 left-0 right-0">
                     <p className="text-white text-center font-medium text-sm pb-2">
@@ -162,8 +162,8 @@ function Features() {
               )
             }
           </Marquee>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white dark:from-background"></div>
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white dark:from-background"></div>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-16 bg-gradient-to-r from-white dark:from-background"></div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-16 bg-gradient-to-l from-white dark:from-background"></div>
         </div>
 
         <div className="text-center">
