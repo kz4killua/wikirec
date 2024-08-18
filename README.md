@@ -1,11 +1,8 @@
-# Overview
-WikiRec is a proof-of-concept content recommendation system powered by both Wikipedia and Azure Cognitive Services. It learns a users likes and dislikes and makes recommendations for books, movies, music, TV series, articles, games, recipes, etc. 
+# 🍿 Wikirec
+A cross-category recommendation engine, powered by Wikipedia. 
 
-The real strength of WikiRec is in its ability to make cross-category recommendations. A user's tastes in movies can help inform book recommendations. A user's tastes in games can help inform music recommendations. A user's tastes in articles can be used to recommend recipes. And much more!
+## Overview
+Wikirec uses data from Wikipedia to recommend similar items to users. Users can get recommendations for books, movies, TV series, music, and games. The real strength of Wikirec however, is in its ability to make cross-category recommendations. For example, you can find movies similar to your favorite books. Or maybe you're looking for games similar to your favorite TV series. WikiRec helps you get recommendations for anything. Try it out [here](https://wikirec.ifeanyiobinelo.com/).
 
-As an example, someone who likes fantasy books may be more inclined to fantasy movies. Someone who reads a lot of sports articles will probably prefer sports games.
-
-# Technical Description
-Articles from Wikipedia are first summarized using Azure's Language Service, then used to create "text embeddings". These can be used to check similarity with other articles, movies, books, etc. 
-
-When a user tells the system that they like some items, the recommendations will be biased towards items that have similar text embeddings to those of the liked items. If the user dislikes some items, the recommendations will favour items that have lower similarities to the disliked content.
+## Approach
+The Wikipedia pages for different books, movies, TV series, music, and games were first downloaded and then used to create text embeddings. These embeddings are used to rank items by similarity. The embeddings are stored in a vector database and queried using a serverless function.  
