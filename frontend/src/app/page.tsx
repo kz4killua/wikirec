@@ -9,7 +9,6 @@ import { TypingEffect } from "@/components/home/typing-effect";
 import { Check, Rocket, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import Marquee from "@/components/magicui/marquee";
 
 
 export default function Home() {
@@ -64,29 +63,6 @@ function Hero() {
 
 function Features() {
 
-  const marqueeImages = [
-    {
-      src: "/marquee-book.jpg",
-      alt: "Books"
-    },
-    {
-      src: "/marquee-game.jpg",
-      alt: "Games"
-    },
-    {
-      src: "/marquee-movie.jpg",
-      alt: "TV series"
-    },
-    {
-      src: "/marquee-music.jpg",
-      alt: "Music"
-    },
-    {
-      src: "/marquee-cinema.jpg",
-      alt: "Movies"
-    },
-  ]
-
   return (
     <section className="py-24">
       <Container>
@@ -119,11 +95,11 @@ function Features() {
             </ul>
           </div>
           <div className="bg-blue-100/70 text-blue-700 p-8 md:p-12 rounded-lg w-full max-w-md">
-            <h3 className="font-bold text-lg mb-4">With Wiki Rec 😎</h3>
+            <h3 className="font-bold text-lg mb-4">With Wiki Rec 🚀</h3>
             <ul className="list-disc list-inside space-y-1.5 ">
               <li className="flex gap-2 items-center">
                 <Check className="shrink-0" size={12} />
-                Find books, movies, tv series, games, and music, all in one platform!
+                Find books, movies, tv series, games, and music, all in one place!
               </li>
               <li className="flex gap-2 items-center">
                 <Check className="shrink-0" size={12} />
@@ -138,36 +114,6 @@ function Features() {
                 No sign-up or credit cards required!
               </li>
             </ul>
-          </div>
-        </div>
-
-        <div className="relative">
-          <Marquee className="[--duration:60s] mt-10 sm:mt-20">
-            {
-              marqueeImages.map(item => 
-                <div className="relative p-2 flex items-center justify-center" key={item.src}>
-                  <Image 
-                    src={item.src}
-                    alt={item.alt}
-                    height={300}
-                    width={300}
-                    className="rounded-lg aspect-[3/2] w-[200px] sm:w-[300px] object-cover"
-                  />
-                  <div className="absolute bottom-2 left-0 right-0">
-                    <p className="text-white text-center font-medium text-sm pb-2">
-                      {item.alt}
-                    </p>
-                  </div>
-                </div>
-              )
-            }
-          </Marquee>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-16 bg-gradient-to-r from-white dark:from-background"></div>
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-16 bg-gradient-to-l from-white dark:from-background"></div>
-        </div>
-
-        <div className="text-center">
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-x-10 mt-10 sm:px-10">
           </div>
         </div>
       </Container>

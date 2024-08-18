@@ -5,7 +5,7 @@ import Container from "@/components/shared/container";
 
 export function Footer() {
   return (
-    <section className="bg-gray-300/50 border-t">
+    <footer className="bg-gray-300/50 border-t border-gray-300/100">
       <Container className="flex flex-col gap-y-6 py-12 px-12">
         <div className="flex flex-col sm:flex-row gap-2 items-center">
           <div className="flex items-center gap-2">
@@ -28,6 +28,6 @@ export function Footer() {
           The source code is available on <Link href={"https://github.com/kz4killua/wikirec"} target="_blank" className="font-medium underline">Github</Link>.
         </div>
       </Container>
-    </section>
+    </footer>
   )
 }
