@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 
 export function Header() {
   return (
-    <Container className="pt-5 sm:pt-7 px-6 sm:px-6 lg:px-6 fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
+    <Container className="pt-5 sm:pt-7 px-4 sm:px-6 lg:px-6 fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
       <header className="w-full h-20 px-7 flex items-center justify-between rounded-xl bg-white shadow-lg border-2 border-blue-500">
         <Link href={"/"}>
           <div className="flex items-center gap-x-3">
