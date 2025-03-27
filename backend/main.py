@@ -1,6 +1,3 @@
-from utilities import upload_csv_items_to_vectorstore
-
-
 def main():
     pass
 
