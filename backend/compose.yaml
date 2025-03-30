@@ -1,16 +1,11 @@
 services:
 
-  mariadb:
-    image: mariadb:11.7.2
-    container_name: mariadb
-    env_file:
-      - .env
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    ports:
-      - 3306:3306
+  qdrant:
+    image: qdrant/qdrant:v1.13.5
     restart: unless-stopped
-    
-volumes:
-  mariadb_data:
-    
+    container_name: qdrant
+    volumes:
+      - ./qdrant_data:/qdrant/storage
+    # TODO: Remove this in production
+    ports:
+      - 6333:6333
