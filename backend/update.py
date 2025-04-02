@@ -1,28 +1,14 @@
 import os
-import itertools
+import urllib.parse
 import hashlib
 import xml.etree.ElementTree as ET 
 import requests
 import bz2
 from tqdm import tqdm
-import csv
 import mwparserfromhell
 from sentence_transformers import SentenceTransformer
-from typing import Iterable
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct
-
-
-# TODO: Use infoboxes to figure out categories: https://en.wikipedia.org/wiki/Wikipedia:List_of_infoboxes
-# TODO: Infobox book, infobox television, infobox video game, infobox song, infobox film
-# TODO: Verify stripped text by eye for a few articles
-# TODO: Verify yielding and memory loading. Do not load all pages at once
-# TODO: Consider securing Qdrant
-# TODO: Add unit tests
-# TODO: Delete the dumps after processing
-# TODO: Update the vector db periodically (e.g., once a month)
-# NOTE: Release dates can be (accurately) gotten from the infoboxes
-# NOTE: You can do popularity actually. But how will you filter this?
+from qdrant_client.models import Distance, VectorParams, PointStruct, HnswConfigDiff
 
 
 def download_dump(checksum: str):
@@ -96,33 +82,34 @@ def load_stream_offsets(index_path: str) -> list:
     return offsets
 
 
-def load_categories() -> dict[str, str]:
-    """Load the mapping of Wikipedia categories to Wikirec categories."""
+def find_infobox(wikicode: mwparserfromhell.wikicode.Wikicode) -> mwparserfromhell.wikicode.Template:
+    """Extract the infobox from a Wikipedia page."""
     
-    path = "categories.csv"
-    categories = dict()
-
-    with open(path, 'r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            categories[row['wikipedia_category']] = row['wikirec_category']
+    for template in wikicode.filter_templates():
+        if template.name.strip().lower().startswith("infobox"):
+            return template
     
-    return categories
+    return None
 
 
-def create_image_url(image: str, namespace="en") -> str:
-    """Creates the Wikimedia URL for a Wikipedia image."""
-    image = normalize_title(image)
-    md5 = hashlib.md5()
-    md5.update(image.encode('utf-8'))
-    md5_hash = md5.hexdigest()
-    return f"https://upload.wikimedia.org/wikipedia/{namespace}/{md5_hash[:1]}/{md5_hash[:2]}/{image}"
+def parse_infobox(infobox: mwparserfromhell.wikicode.Template) -> str:
+    """Extract details from the infobox."""
+
+    category = None
+    parts = str(infobox.name).split(maxsplit=1)
+    if len(parts) >= 2:
+        category = parts[1].strip().lower()
+
+    image = None
+    if infobox.has("image"):
+        image = infobox.get("image").value.strip()
+
+    return {'category': category, 'image': image}
 
 
 def normalize_title(title: str) -> str:
     """Normalize the title of a Wikipedia page or image."""
-    # Source: https://gerrit.wikimedia.org/r/plugins/gitiles/operations/dumps/+/ariel/toys/bz2multistream/wikiarticles.py
-    return title.replace('_', ' ').replace('&', '&amp;').replace('"', "&quot;")
+    return urllib.parse.quote(title.replace(' ', '_'), safe='_()')
 
 
 def stream_dump(dump_path: str, index_path: str):
@@ -153,12 +140,11 @@ def stream_dump(dump_path: str, index_path: str):
             yield decoded
 
 
-def parse_pages(chunk: str, categories: dict):
+def parse_pages(chunk: str):
     """Parse a Wikipedia dump chunk and extract relevant information from each page."""
 
-    # Remove extra closing tag on the last chunk
-    if chunk.endswith('</mediawiki>'):
-        chunk = chunk.removesuffix('</mediawiki>')
+    # Remove any extra closing tags on the last chunk
+    chunk = chunk.removesuffix('</mediawiki>')
 
     # Split the chunk into individual pages
     chunk = f"<chunk>\n{chunk}\n</chunk>"
@@ -175,26 +161,23 @@ def parse_pages(chunk: str, categories: dict):
         if not all([page_text, page_title, page_id]):
             continue
 
-        # Ensure the page is in the specified categories
-        page_category = None
-        for category in categories:
-            if f'[[Category:{category}]]' in page_text:
-                page_category = categories[category]
-                break
-        else:
-            continue
-
         # Parse the page text using mwparserfromhell
         wikicode = mwparserfromhell.parse(page_text)
 
-        # Extract the page image from the infobox
-        page_image = None
-        for template in wikicode.filter_templates():
-            if template.name.strip().startswith("Infobox"):
-                if template.has("image"):
-                    page_image = template.get("image").value.strip()
-                    page_image = create_image_url(page_image)
-                    break
+        infobox = find_infobox(wikicode)
+        if not infobox:
+            continue
+
+        infobox_details = parse_infobox(infobox)
+
+        page_image = infobox_details['image']
+        if not page_image:
+            continue
+
+        # Skip pages in uninteresting categories
+        page_category = infobox_details['category']
+        if page_category not in {'book', 'television', 'video game', 'song', 'film'}:
+            continue
 
         # Extract the text from the page
         page_text = str(wikicode.strip_code())
@@ -208,15 +191,6 @@ def parse_pages(chunk: str, categories: dict):
         }
 
 
-def batches(iterable: Iterable, batch_size: int):
-    """Yield successive batches from an iterable."""
-    iterator = iter(iterable)
-    batch = tuple(itertools.islice(iterator, batch_size))
-    while batch:
-        yield batch
-        batch = tuple(itertools.islice(iterator, batch_size))
-
-
 def truncate_text(text: str, max_tokens: int, model) -> str:
     """Truncate text to a maximum number of tokens."""
     tokenizer = model.tokenizer
@@ -226,7 +200,7 @@ def truncate_text(text: str, max_tokens: int, model) -> str:
 
 def create_embeddings(sentences: list[str]):
     """Create embeddings for the given sentences."""
-    model_name = 'all-MiniLM-L6-v2'
+    model_name = 'sentence-transformers/all-MiniLM-L6-v2'
     max_tokens = 256
     model = SentenceTransformer(model_name)
     sentences = [truncate_text(sentence, max_tokens, model) for sentence in sentences]
@@ -249,10 +223,8 @@ def store_embeddings(ids: list[int], vectors: list[list], payloads: list):
     if not client.collection_exists(collection_name):
         client.create_collection(
             collection_name=collection_name,
-            vectors_config=VectorParams(
-                size=384,
-                distance=Distance.COSINE,
-            ),
+            vectors_config=VectorParams(size=384, distance=Distance.COSINE, on_disk=True),
+            hnsw_config=HnswConfigDiff(on_disk=True),
         )
 
     # Store the embeddings in the collection
@@ -270,26 +242,23 @@ def main():
     # NOTE: For now, we use a local (partial) dump.
     dump_path = "enwiki-20250301-pages-articles-multistream1.xml-p1p41242.bz2"
     index_path = "enwiki-20250301-pages-articles-multistream-index1.txt-p1p41242.bz2"
-    categories = load_categories()
 
     for chunk in stream_dump(dump_path, index_path):
-        pages = parse_pages(chunk, categories)
-        for batch in batches(pages, 32):
-            
-            # Store embeddings and metadata in Qdrant
-            print(f"Processing batch of {len(batch)} pages")
-            sentences = [page['text'] for page in batch]
-            embeddings = create_embeddings(sentences)
-            ids = [int(page['id']) for page in batch]
-            payloads = [
-                {
-                    'title': page['title'],
-                    'image': page['image'],
-                    'category': page['category'],
-                }
-                for page in batch
-            ]
-            store_embeddings(ids, embeddings, payloads)
+        pages = parse_pages(chunk)
+
+        # Store embeddings and metadata in Qdrant
+        sentences = [page['text'] for page in pages]
+        embeddings = create_embeddings(sentences)
+        ids = [int(page['id']) for page in pages]
+        payloads = [
+            {
+                'title': page['title'],
+                'image': page['image'],
+                'category': page['category'],
+            }
+            for page in pages
+        ]
+        store_embeddings(ids, embeddings, payloads)
 
 
 if __name__ == "__main__":
